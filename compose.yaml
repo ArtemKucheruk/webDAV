@@ -11,5 +11,16 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  backend:
+    container_name: webDAV_backend
+    build:
+      context: ./backend
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - postgres
+
 volumes:
   pgdata:
