@@ -9,7 +9,7 @@ cp .env.example .env
 cp compose.override.example.yaml compose.override.yaml
 ```
 
-- `.env` — sets `DB_USER`, `DB_PASSWORD`, `DB_NAME` for the postgres container.
+- `.env`
 - `compose.override.yaml` — sets the host/container port mapping and restart policy for local dev.
 
 Then start the stack:
