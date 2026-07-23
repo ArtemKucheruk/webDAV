@@ -1,0 +1,19 @@
+# webDAV
+
+## Setup
+
+Copy the example env and compose override files, then fill in your values:
+
+```bash
+cp .env.example .env
+cp compose.override.example.yaml compose.override.yaml
+```
+
+- `.env` — sets `DB_USER`, `DB_PASSWORD`, `DB_NAME` for the postgres container.
+- `compose.override.yaml` — sets the host/container port mapping and restart policy for local dev.
+
+Then start the stack:
+
+```bash
+docker compose up -d --build
+```
