@@ -12,6 +12,7 @@ __pycache__/
 *.txt
 *.env*_token
 plan.md
+backend/tmp/
 
 
 compose.override.yaml
