@@ -11,9 +11,10 @@ __pycache__/
 *.env.script
 *.txt
 *.env*_token
-plan.md
 backend/tmp/
 
 
 compose.override.yaml
 
+*.md
+!README.md
