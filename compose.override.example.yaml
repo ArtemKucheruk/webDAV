@@ -4,6 +4,11 @@ services:
       - "127.0.0.1:[host_port]:[container_port]"
     restart: unless-stopped
 
+  redis:
+    ports:
+      - "127.0.0.1:[host_port]:[container_port]"
+    restart: unless-stopped
+
   backend:
     ports:
       - "127.0.0.1:[host_port]:[container_port]"
