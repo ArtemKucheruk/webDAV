@@ -12,6 +12,7 @@ __pycache__/
 *.txt
 *.env*_token
 backend/tmp/
+backend/logs/
 *.env*
 !.env.example
 

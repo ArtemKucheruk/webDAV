@@ -10,5 +10,8 @@ migrate-up:
 migrate-down:
 	goose -dir backend/db/migrations postgres "$(DB_URL)" down
 
+migrate-create:
+	goose -dir backend/db/migrations create $(name) sql
+
 migrate-status:
 	goose -dir backend/db/migrations postgres "$(DB_URL)" status

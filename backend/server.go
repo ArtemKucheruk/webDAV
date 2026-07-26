@@ -13,7 +13,7 @@ import (
 
 func main() {
 
-	env := utils.NewEnv(&utils.AppLogger, ".env.backend")
+	env := utils.NewEnv(&utils.AppLogger, ".env")
 
 	if err := db.Connect(context.Background(), env, &utils.DBLogger); err != nil {
 		utils.AppLogger.Err(err).Msg("failed to connect to db")

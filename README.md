@@ -17,3 +17,37 @@ Then start the stack:
 ```bash
 docker compose up -d --build
 ```
+
+Install [goose](https://github.com/pressly/goose) (used by the `Makefile` to run migrations against the host-mapped DB port — not bundled as a Go dependency):
+
+```bash
+go install github.com/pressly/goose/v3/cmd/goose@latest
+```
+
+Apply migrations:
+
+```bash
+make migrate-up
+```
+
+### DB
+
+apply all pending migrations
+```
+make migrate-up
+```
+
+roll back the last migration
+```
+make migrate-down
+```
+
+check migration status
+```
+make migrate-status
+```
+
+create a new migration
+```
+make migrate-create name=add_users_table
+```
