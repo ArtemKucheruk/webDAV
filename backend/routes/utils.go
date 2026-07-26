@@ -12,4 +12,3 @@ func Group(r Router, prefix string, fn func(r *echo.Group)) {
 	g := r.Group(prefix)
 	fn(g)
 }
-

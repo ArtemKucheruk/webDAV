@@ -9,12 +9,12 @@ import (
 )
 
 type Redis struct {
-	Client redis.Client;
+	Client redis.Client
 	Logger *zerolog.Logger
 }
 
-func NewRedis(env *utils.Env, logger *zerolog.Logger) *redis.Client{
-	redisAddress:= env.Get("REDIS_ADDRESS")
+func NewRedis(env *utils.Env, logger *zerolog.Logger) *redis.Client {
+	redisAddress := env.Get("REDIS_ADDRESS")
 
 	opt, err := redis.ParseURL(redisAddress)
 	if err != nil {
@@ -23,7 +23,7 @@ func NewRedis(env *utils.Env, logger *zerolog.Logger) *redis.Client{
 	}
 
 	client := redis.NewClient(opt)
-	if err := PingRedis(client, logger); err != nil{
+	if err := PingRedis(client, logger); err != nil {
 		logger.Err(err).Msg("redis has not connected")
 		panic(err)
 	}
@@ -31,7 +31,7 @@ func NewRedis(env *utils.Env, logger *zerolog.Logger) *redis.Client{
 	return client
 }
 
-func PingRedis(client *redis.Client, logger *zerolog.Logger)error{
+func PingRedis(client *redis.Client, logger *zerolog.Logger) error {
 	ctx := context.Background()
 	if err := client.Ping(ctx).Err(); err != nil {
 		logger.Err(err).Msg("redis ping failed")
@@ -40,4 +40,3 @@ func PingRedis(client *redis.Client, logger *zerolog.Logger)error{
 	logger.Info().Msg("redis ping ok")
 	return nil
 }
-

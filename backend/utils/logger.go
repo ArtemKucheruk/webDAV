@@ -7,10 +7,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
-
-
 func InitLogger() zerolog.Logger {
-	logger:= zerolog.New(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
+	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
 	return logger
 }
 
