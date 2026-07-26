@@ -14,17 +14,15 @@ import (
 )
 
 type registerReq struct {
-	Email string `json:"email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-
-func RegisterUser(c *echo.Context, logger *zerolog.Logger) error{
+func RegisterUser(c *echo.Context, logger *zerolog.Logger) error {
 	var userData registerReq
-	if err := c.Bind(&userData); err != nil{
+	if err := c.Bind(&userData); err != nil {
 		logger.Err(err).Msg("failed to bind user registry data")
-		echo.NewHTTPError(http.StatusBadRequest, "invalid body")
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid body")
 	}
 
 	if _, err := mail.ParseAddress(userData.Email); err != nil {
@@ -32,7 +30,7 @@ func RegisterUser(c *echo.Context, logger *zerolog.Logger) error{
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid email")
 	}
 
-	if len(userData.Password) < 8{
+	if len(userData.Password) < 8 {
 		return echo.NewHTTPError(http.StatusBadRequest, "password should be min 8 characters")
 	}
 
@@ -44,7 +42,7 @@ func RegisterUser(c *echo.Context, logger *zerolog.Logger) error{
 
 	queries := sqlc.New(db.Pool)
 	id, err := queries.CreateUser(c.Request().Context(), sqlc.CreateUserParams{
-		Email: userData.Email,
+		Email:        userData.Email,
 		PasswordHash: string(hash),
 	})
 	if err != nil {
@@ -56,5 +54,5 @@ func RegisterUser(c *echo.Context, logger *zerolog.Logger) error{
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to create user")
 	}
 	logger.Info().Str("user", userData.Email).Msg("user was successfully created")
-	return c.JSON(http.StatusCreated, map[string]any{"id":id})
+	return c.JSON(http.StatusCreated, map[string]any{"id": id})
 }
