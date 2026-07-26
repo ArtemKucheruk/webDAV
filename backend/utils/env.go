@@ -20,28 +20,28 @@ func NewEnv(logger *zerolog.Logger, filenames ... string) *Env{
 	return &Env{logger: logger}
 }
 
-func (e *Env) Get(key string) (string, error) {
+func (e *Env) Get(key string) string {
 	if path := os.Getenv(key + "_FILE"); path != "" {
 		data, err := os.ReadFile(path) 
 
 		if err != nil {
 			e.logger.Fatal().Err(err).Msgf("Env: failed to read '%s_FILE' at '%s'", key, path)
-			return "", err
+		  panic(err)
 		}
+
 		value := strings.TrimSpace(string(data))
 		if value == "" {
 			e.logger.Fatal().Msgf("Env: '%s_FILE' at '%s' is empty", key, path)
-			return "", os.ErrNotExist
+		  panic(err)
 		}
-		return value, nil
+		return value 
 	}
 
 	value := os.Getenv(key)
 	if value == "" {
 		e.logger.Fatal().Msgf("Env: Variable '%s' not found", key)
-		return "", os.ErrNotExist
 	}
 
 	e.logger.Debug().Msgf("Env: Retrieved variable '%s'", key)
-	return value, nil
+	return value
 }
