@@ -1,6 +1,8 @@
 package redis
 
 import (
+	"context"
+
 	"github.com/ArtemKucheruk/webDAV.git/utils"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
@@ -11,7 +13,7 @@ type Redis struct {
 	Logger *zerolog.Logger
 }
 
-func NewRedis(env *utils.Env, logger *zerolog.Logger) (*redis.Client, error){
+func NewRedis(env *utils.Env, logger *zerolog.Logger) *redis.Client{
 	redisAddress:= env.Get("REDIS_ADDRESS")
 
 	opt, err := redis.ParseURL(redisAddress)
@@ -21,7 +23,21 @@ func NewRedis(env *utils.Env, logger *zerolog.Logger) (*redis.Client, error){
 	}
 
 	client := redis.NewClient(opt)
+	if err := PingRedis(client, logger); err != nil{
+		logger.Err(err).Msg("redis has not connected")
+		panic(err)
+	}
 	logger.Info().Msg("redis has been initialized")
-	return client, err
+	return client
+}
+
+func PingRedis(client *redis.Client, logger *zerolog.Logger)error{
+	ctx := context.Background()
+	if err := client.Ping(ctx).Err(); err != nil {
+		logger.Err(err).Msg("redis ping failed")
+		return err
+	}
+	logger.Info().Msg("redis ping ok")
+	return nil
 }
 

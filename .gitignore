@@ -12,7 +12,8 @@ __pycache__/
 *.txt
 *.env*_token
 backend/tmp/
-
+*.env*
+!.env.example
 
 compose.override.yaml
 

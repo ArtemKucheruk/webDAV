@@ -13,7 +13,7 @@ import (
 
 func main() {
 
-	env := utils.NewEnv(&utils.AppLogger)
+	env := utils.NewEnv(&utils.AppLogger, ".env.backend")
 
 	if err := db.Connect(context.Background(), env, &utils.DBLogger); err != nil {
 		utils.AppLogger.Err(err).Msg("failed to connect to db")
@@ -21,10 +21,7 @@ func main() {
 	defer db.Pool.Close()
 
 
-	redisClient, err := redis.NewRedis(env, &utils.RedisLogger)
-	if err != nil {
-		utils.AppLogger.Err(err).Msg("failed to start redis")
-	}
+	redisClient:= redis.NewRedis(env, &utils.RedisLogger)
 
 
 	  _ = &redis.Redis {
