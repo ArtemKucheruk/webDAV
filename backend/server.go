@@ -17,6 +17,7 @@ func main() {
 
 	if err := db.Connect(context.Background(), env, &utils.DBLogger); err != nil {
 		utils.AppLogger.Err(err).Msg("failed to connect to db")
+		panic(err)
 	}
 	defer db.Pool.Close()
 

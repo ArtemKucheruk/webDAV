@@ -24,6 +24,7 @@ func Connect(ctx context.Context, env *utils.Env, logger *zerolog.Logger) error 
 		logger.Err(err).Msg("failed to ping db")
 		return err
 	}
+	logger.Info().Msg("db connection has been initialized")
 
 	Pool = pool
 	return nil
