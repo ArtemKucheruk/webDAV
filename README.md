@@ -6,6 +6,7 @@ Copy the example env and compose override files, then fill in your values:
 
 ```bash
 cp .env.example .env
+cp frontend/.env.example frontend/.env
 cp compose.override.example.yaml compose.override.yaml
 ```
 

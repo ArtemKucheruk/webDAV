@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v5"
 
 	"github.com/ArtemKucheruk/webDAV.git/db"
-	"github.com/ArtemKucheruk/webDAV.git/routes"
 	"github.com/ArtemKucheruk/webDAV.git/redis"
+	"github.com/ArtemKucheruk/webDAV.git/routes"
 	"github.com/ArtemKucheruk/webDAV.git/utils"
 )
 
@@ -21,13 +21,11 @@ func main() {
 	}
 	defer db.Pool.Close()
 
+	redisClient := redis.NewRedis(env, &utils.RedisLogger)
 
-	redisClient:= redis.NewRedis(env, &utils.RedisLogger)
-
-
-	  _ = &redis.Redis {
-		 Client: *redisClient,
-		 Logger: &utils.RedisLogger,
+	_ = &redis.Redis{
+		Client: *redisClient,
+		Logger: &utils.RedisLogger,
 	}
 
 	e := echo.New()
@@ -35,5 +33,9 @@ func main() {
 	api := e.Group("/api")
 	routes.SetupRoutes(api)
 
-	e.Start(":8080")
+	err := e.Start(":8080")
+	if err != nil {
+		utils.AppLogger.Fatal().Err(err).Msg("failed to start backend")
+	}
+
 }
