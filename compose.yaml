@@ -31,6 +31,18 @@ services:
     depends_on:
       - postgres
 
+  frontend:
+    container_name: webDAV_frontend
+    build:
+      context: ./frontend
+    env_file:
+      - ./frontend/.env
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+    depends_on:
+      - backend
+
 volumes:
   pgdata:
   redis-data:
