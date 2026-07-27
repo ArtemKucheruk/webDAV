@@ -10,10 +10,10 @@ export interface GradientAnchor {
 
 /** the four colours blended across the letter faces */
 export const ANCHOR: GradientAnchor[] = [
-  { c: '#000000', p: [-0.52, 0.30], r: 0.62 }, // top left
-  { c: '#000000', p: [-0.10, -0.34], r: 0.58 }, // low centre-left
-  { c: '#000000', p: [0.34, 0.36], r: 0.60 }, // top right
-  { c: '#000000', p: [0.56, -0.30], r: 0.40 }, // low right
+  { c: '#ffffff', p: [-0.52, 0.30], r: 0.62 }, // top left
+  { c: '#ffffff', p: [-0.10, -0.34], r: 0.58 }, // low centre-left
+  { c: '#ffffff', p: [0.34, 0.36], r: 0.60 }, // top right
+  { c: '#ffffff', p: [0.56, -0.30], r: 0.40 }, // low right
 ]
 
 /** light directions, as GLSL expressions */
@@ -26,7 +26,7 @@ export const HALF_W = 0.5
 /* ─── room ──────────────────────────────────────────────────── */
 
 /** floor bounce colour, tints the lower half */
-export const ENV_BOT = '#F2F5F9'
+export const ENV_BOT = '#000000'
 
 /* ─── camera ────────────────────────────────────────────────── */
 

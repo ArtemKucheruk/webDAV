@@ -1,4 +1,4 @@
-import { DOCK_W, DOCK_Y, START_CAMERA } from './config'
+import { DOCK_W, DOCK_Y, START_CAMERA } from '../config'
 import type { Pose } from '@/types/scene'
 
 /** symmetric cubic — starts and stops, never flung */
