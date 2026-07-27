@@ -1,4 +1,11 @@
 # webDAV
+## Web Distributed Authoring and Versioning
+so, the idea is that I have a server and while I run  
+some web projects. They are small and don't require  
+any storage. In the end, I have some space to waste on  
+my server. Yeah, u can use `scp` but I also want to  
+access those files from phone. Maybe sharing  
+functionality will also be done.  
 
 ## Setup
 

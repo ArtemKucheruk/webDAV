@@ -15,7 +15,7 @@ services:
     container_name: webDAV_redis
     image: redis:latest
     volumes:
-      - ./backend/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./backend/cache/redis.conf:/usr/local/etc/redis/redis.conf
       - redis-data:/data
       - ./backend/logs/redis-logs:/redis-logs
     command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD}
