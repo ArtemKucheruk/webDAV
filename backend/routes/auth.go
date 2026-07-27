@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"net/mail"
 
+	"github.com/ArtemKucheruk/webDAV.git/cache"
 	"github.com/ArtemKucheruk/webDAV.git/db"
 	"github.com/ArtemKucheruk/webDAV.git/db/sqlc"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/labstack/echo/v5"
+	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,7 +20,7 @@ type registerReq struct {
 	Password string `json:"password"`
 }
 
-func RegisterUser(c *echo.Context, logger *zerolog.Logger) error {
+func RegisterUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) error {
 	var userData registerReq
 	if err := c.Bind(&userData); err != nil {
 		logger.Err(err).Msg("failed to bind user registry data")
@@ -54,5 +56,10 @@ func RegisterUser(c *echo.Context, logger *zerolog.Logger) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to create user")
 	}
 	logger.Info().Str("user", userData.Email).Msg("user was successfully created")
+
+	if err := cache.CreateSession(c, redis, id, logger); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to create session")
+	}
+
 	return c.JSON(http.StatusCreated, map[string]any{"id": id})
 }
