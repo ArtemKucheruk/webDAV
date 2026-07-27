@@ -12,7 +12,7 @@ import {
   WebGLRenderer,
 } from 'three'
 import { solveCamera } from './motion/camera'
-import { ANCHOR, DUR, ENV_BOT, FOV, HALF_W, TILT_PITCH, TILT_YAW } from './config'
+import { ANCHOR, DUR, ENV_BOT, ENV_TOP, FOV, HALF_W, TILT_PITCH, TILT_YAW } from './config'
 import { SKY_FRAG, SKY_VERT } from './shaders/env'
 import { poseAt } from './motion/flight'
 import { loadLogo } from './geometry/decode'
@@ -41,6 +41,7 @@ export function createScene(canvas: HTMLCanvasElement): SceneHandle | null {
 
   const uniforms: SceneUniforms = {
     uRes: { value: new Vector2(1, 1) },
+    uEnvTop: { value: new Color(ENV_TOP) },
     uEnvBot: { value: new Color(ENV_BOT) },
     uHot: { value: new Vector2(0.5, 1) },
     uLogo: { value: new Vector4(0, 0, 1, 0) },

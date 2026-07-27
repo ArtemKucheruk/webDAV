@@ -4,7 +4,9 @@ import type { BufferGeometry, Color, IUniform, Vector2, Vector3, Vector4 } from 
 export type SceneUniforms = {
   /** viewport size in device pixels */
   uRes: IUniform<Vector2>
-  /** floor bounce colour */
+  /** room's upper colour */
+  uEnvTop: IUniform<Color>
+  /** floor colour */
   uEnvBot: IUniform<Color>
   /** overhead light position */
   uHot: IUniform<Vector2>

@@ -1,5 +1,6 @@
 export const ENV = `
 uniform vec2  uRes;
+uniform vec3  uEnvTop;
 uniform vec3  uEnvBot;
 uniform vec2  uHot;
 uniform vec4  uLogo;   // xy = centre px, z = width px, w = strength
@@ -7,7 +8,7 @@ uniform vec4  uLogo;   // xy = centre px, z = width px, w = strength
 vec3 envAt(vec2 fc){
   vec2 uv = fc / uRes;
   float g = 1.0 - uv.y;
-  vec3 c = mix(vec3(1.0), uEnvBot, g * g * 0.80);
+  vec3 c = mix(uEnvTop, uEnvBot, g * g * 0.80);
 
   // one soft overhead source, drifting with the pointer
   float d = distance(vec2(uv.x * (uRes.x / uRes.y), uv.y), uHot);

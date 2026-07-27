@@ -25,7 +25,10 @@ export const HALF_W = 0.5
 
 /* ─── room ──────────────────────────────────────────────────── */
 
-/** floor bounce colour, tints the lower half */
+/** the room's upper colour */
+export const ENV_TOP = '#12161A'
+
+/** floor colour, reached toward the bottom */
 export const ENV_BOT = '#000000'
 
 /* ─── camera ────────────────────────────────────────────────── */
