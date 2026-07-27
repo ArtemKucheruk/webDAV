@@ -1,4 +1,78 @@
 @import "tailwindcss";
-@import "./styles/fonts.css";
-@import "./styles/tokens.css";
-@import "./styles/base.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: "Naru Mono";
+  src: url("/fonts/naru.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+:root {
+  color-scheme: light;
+
+  --ground:  #FFFFFF;
+  --raise:   #FFFFFF;
+  --line:    #E2E6EC;
+  --hair:    #EEF1F5;
+  --ink:     #0B0D10;
+  --ink-2:   #576069;
+  --ink-3:   #8A939D;
+  --fill:    #0B0D10;
+  --on-fill: #FFFFFF;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --ground:  #070809;
+  --raise:   #0D0F11;
+  --line:    #1A1D21;
+  --hair:    #131619;
+  --ink:     #F6F7F7;
+  --ink-2:   #9BA2AA;
+  --ink-3:   #5E656E;
+  --fill:    #FFFFFF;
+  --on-fill: #070809;
+}
+
+@theme inline {
+  --color-ground:  var(--ground);
+  --color-raise:   var(--raise);
+  --color-line:    var(--line);
+  --color-hair:    var(--hair);
+  --color-ink:     var(--ink);
+  --color-ink-2:   var(--ink-2);
+  --color-ink-3:   var(--ink-3);
+  --color-fill:    var(--fill);
+  --color-on-fill: var(--on-fill);
+
+  --font-mono: "Naru Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-pill:    999px;
+  --spacing-pad:    clamp(20px, 6vw, 56px);
+  --container-page: 1080px;
+}
+
+@layer base {
+  html {
+    background: var(--ground);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100svh;
+  }
+
+  :focus-visible {
+    outline: 1.5px solid var(--fill);
+    outline-offset: 4px;
+    border-radius: 3px;
+  }
+}
