@@ -2,14 +2,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@font-face {
-  font-family: "Naru Mono";
-  src: url("/fonts/naru.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
-}
-
 :root {
   color-scheme: light;
 
@@ -51,9 +43,6 @@
 
   /* body copy */
   --font-sans: "bc-civitas", ui-sans-serif, system-ui, sans-serif;
-
-  /* tabular things — file sizes, paths */
-  --font-mono: "Naru Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --radius-pill:    999px;
   --spacing-pad:    clamp(20px, 6vw, 56px);
