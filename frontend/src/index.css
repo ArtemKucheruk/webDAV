@@ -49,6 +49,10 @@
   --color-fill:    var(--fill);
   --color-on-fill: var(--on-fill);
 
+  /* body copy */
+  --font-sans: "bc-civitas", ui-sans-serif, system-ui, sans-serif;
+
+  /* tabular things — file sizes, paths */
   --font-mono: "Naru Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --radius-pill:    999px;
@@ -64,7 +68,7 @@
   body {
     background: var(--ground);
     color: var(--ink);
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     min-height: 100svh;
