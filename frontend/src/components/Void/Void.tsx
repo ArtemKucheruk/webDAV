@@ -14,15 +14,17 @@ import {
 } from 'three'
 import {
   ANCHOR,
+  DUR,
   ENV_BOT,
   FOV,
   HALF_W,
   SKY_FRAG,
   SKY_VERT,
-  START_CAMERA,
-  TILT,
+  TILT_PITCH,
+  TILT_YAW,
   createLogoMaterial,
   loadLogo,
+  poseAt,
 } from '@/scene'
 import type { SceneUniforms } from '@/types/scene'
 
@@ -85,6 +87,11 @@ export function Void() {
     let tx = 0
     let ty = 0
 
+    /* flight: u runs 0 (opening) to 1 (docked) */
+    let u = 0
+    let launched = false
+    let t0 = 0
+
     function place(px: number, cxPx: number, cyPx: number) {
       const tan = Math.tan((FOV * Math.PI) / 360)
       const aspect = vw / vh
@@ -107,8 +114,20 @@ export function Void() {
       renderer.setSize(vw, vh, false) 
       camera.aspect = vw / vh
       uniforms.uRes.value.set(vw * dpr, vh * dpr)
-      place(START_CAMERA * vw, vw / 2, vh / 2)
+      applyPose()
       dirty = true
+    }
+
+    function applyPose() {
+      const p = poseAt(u, vw, vh)
+      place(p.w, p.cx, p.cy)
+    }
+
+    function launch() {
+      if (launched) return
+      launched = true
+      t0 = performance.now()
+      poke()
     }
 
     function queue() {
@@ -122,10 +141,17 @@ export function Void() {
 
     function frame() {
       raf = null
+
+      if (launched && u < 1) {
+        u = Math.min(1, (performance.now() - t0) / DUR)
+        applyPose()
+        dirty = true
+      }
+
       mx += (tx - mx) * 0.07
       my += (ty - my) * 0.07
-      pivot.rotation.y = mx * TILT
-      pivot.rotation.x = my * TILT * 0.6
+      pivot.rotation.y = mx * TILT_YAW
+      pivot.rotation.x = my * TILT_PITCH
       uniforms.uHot.value.set(0.5 * (vw / vh) + mx * 0.09, 1 + my * 0.06)
       if (Math.abs(tx - mx) > 0.0015 || Math.abs(ty - my) > 0.0015) dirty = true
 
@@ -151,13 +177,26 @@ export function Void() {
       poke()
     }
 
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key.startsWith('Arrow') || e.key === ' ' || e.key === 'PageDown') launch()
+    }
+
     window.addEventListener('resize', onResize, { passive: true })
     document.addEventListener('visibilitychange', onVisibility)
 
-    const canDrift =
-      window.matchMedia('(pointer: fine)').matches &&
-      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (canDrift) {
+    window.addEventListener('wheel', launch, { passive: true })
+    window.addEventListener('touchmove', launch, { passive: true })
+    window.addEventListener('pointerdown', launch, { passive: true })
+    window.addEventListener('keydown', onKeyDown)
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) {
+      /* no flight: land it and let the page be a page */
+      u = 1
+      launched = true
+    }
+
+    if (window.matchMedia('(pointer: fine)').matches && !reduced) {
       window.addEventListener('pointermove', onPointerMove, { passive: true })
     }
 
@@ -189,6 +228,10 @@ export function Void() {
       if (raf !== null) cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
       window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('wheel', launch)
+      window.removeEventListener('touchmove', launch)
+      window.removeEventListener('pointerdown', launch)
+      window.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('visibilitychange', onVisibility)
       logo?.geometry.dispose()
       logoMaterial?.dispose()

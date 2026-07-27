@@ -22,6 +22,14 @@ export type SceneUniforms = {
   uR: IUniform<number[]>
 }
 
+/** where the logo sits on screen, in viewport pixels */
+export interface Pose {
+  /** width of the caps */
+  w: number
+  cx: number
+  cy: number
+}
+
 /** width normalised to 1 unit, caps on z = 0, extrusion running to -depth */
 export interface LogoGeometry {
   geometry: BufferGeometry

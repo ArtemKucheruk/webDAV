@@ -1,5 +1,5 @@
 import { BufferAttribute, BufferGeometry, DoubleSide, ShaderMaterial } from 'three'
-import { FILL_DIR, GEO_URL, KEY_DIR } from './constants'
+import { FILL_DIR, GEO_URL, KEY_DIR } from './config'
 import { ENV } from './env'
 import type { LogoGeometry, SceneUniforms } from '@/types/scene'
 
