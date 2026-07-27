@@ -1,12 +1,7 @@
-import { Void } from '@/components/Void'
+import { Hero } from '@/pages/Hero'
 
 function App() {
-  return (
-    <>
-      <Void />
-      <main className="relative z-10 mx-auto min-h-svh max-w-page px-pad" />
-    </>
-  )
+  return <Hero />
 }
 
 export default App
