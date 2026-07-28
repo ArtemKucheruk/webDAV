@@ -30,8 +30,14 @@ export interface SceneHandle {
   dispose(): void
 }
 
-/** null when WebGL is unavailable — the caller leaves the CSS background alone */
-export function createScene(canvas: HTMLCanvasElement): SceneHandle | null {
+export interface SceneOptions {
+  onDock?: () => void
+}
+
+export function createScene(
+  canvas: HTMLCanvasElement,
+  options: SceneOptions = {},
+): SceneHandle | null {
   let renderer: WebGLRenderer
   try {
     renderer = new WebGLRenderer({ canvas, antialias: true, alpha: false })
@@ -89,11 +95,19 @@ export function createScene(canvas: HTMLCanvasElement): SceneHandle | null {
   /* flight: u runs 0 (opening) to 1 (docked) */
   let u = 0
   let launched = false
+  let dockedFired = false
   let t0 = 0
+
+  function fireDock() {
+    if (dockedFired) return
+    dockedFired = true
+    options.onDock?.()
+  }
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     u = 1
     launched = true
+    fireDock()
   }
 
   function applyPose() {
@@ -140,6 +154,7 @@ export function createScene(canvas: HTMLCanvasElement): SceneHandle | null {
       u = Math.min(1, (performance.now() - t0) / DUR)
       applyPose()
       dirty = true
+      if (u >= 1) fireDock()
     }
 
     mx += (tx - mx) * 0.07
