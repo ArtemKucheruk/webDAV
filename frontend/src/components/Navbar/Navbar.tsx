@@ -1,30 +1,38 @@
-const LINKS = [
+const DESTINATIONS = [
   { label: 'docs', href: '#' },
-  { label: 'pricing', href: '#' },
-  { label: 'sign in', href: '#' },
+  { label: 'github', href: '#' },
 ]
+
+const LINK = 'text-[17px] text-ink-3 transition-colors hover:text-ink'
 
 export function Navbar() {
   return (
-    <nav className="sticky top-0 z-20 bg-ground/75 backdrop-blur-[14px]">
-      <div className="mx-auto flex h-22 max-w-page items-center justify-evenly gap-5 px-pad">
-        {LINKS.map(({ label, href }) => (
-          <a
-            key={label}
-            href={href}
-            className="text-[17px] text-ink-3 transition-colors hover:text-ink"
-          >
-            {label}
-          </a>
-        ))}
+    <nav aria-label="Main" className="sticky top-0 z-20 bg-ground/75 backdrop-blur-[14px]">
+      <div className="mx-auto flex h-22 max-w-page items-center justify-between gap-8 px-pad">
+        <ul className="flex items-center gap-8 sm:gap-12">
+          {DESTINATIONS.map(({ label, href }) => (
+            <li key={label}>
+              <a href={href} className={LINK}>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
 
-        <a
-          href="#"
-          className="inline-flex items-center justify-center rounded-md bg-fill px-7 py-3
-            text-[17px] text-on-fill transition-transform hover:-translate-y-px"
-        >
-          Create account
-        </a>
+        <div className="flex items-center gap-6">
+          <a href="#" className={LINK}>
+            sign in
+          </a>
+
+          <a
+            href="#"
+            className="inline-flex items-center gap-2 rounded-md bg-fill px-7 py-3 text-[17px]
+              whitespace-nowrap text-on-fill transition-transform motion-safe:hover:-translate-y-px"
+          >
+            create account
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
       </div>
     </nav>
   )
