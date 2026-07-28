@@ -55,3 +55,6 @@ export const DOCK_W = 0.34
 
 /** landed centre height — 0.5 is dead centre, lower sits higher up */
 export const DOCK_Y = 0.3
+
+/** supporting line's height, clear of the fan below the caps */
+export const SAY_Y = 0.44
