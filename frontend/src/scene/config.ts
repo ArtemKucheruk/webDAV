@@ -11,9 +11,9 @@ export interface GradientAnchor {
 /** the four colours blended across the letter faces */
 export const ANCHOR: GradientAnchor[] = [
   { c: '#ffffff', p: [-0.52, 0.30], r: 0.62 }, // top left
-  { c: '#ffffff', p: [-0.10, -0.34], r: 0.58 }, // low centre-left
+  { c: '#fafafa', p: [-0.10, -0.34], r: 0.58 }, // low centre-left
   { c: '#ffffff', p: [0.34, 0.36], r: 0.60 }, // top right
-  { c: '#ffffff', p: [0.56, -0.30], r: 0.40 }, // low right
+  { c: '#f4f4f4', p: [0.56, -0.30], r: 0.40 }, // low right
 ]
 
 /** light directions, as GLSL expressions */
@@ -34,10 +34,10 @@ export const ENV_BOT = '#000000'
 /* ─── camera ────────────────────────────────────────────────── */
 
 /** lens angle — higher is a wider lens and a more dramatic fan (try 25..60) */
-export const FOV = 40
+export const FOV = 35
 
 /** pointer tilts the logo up/down (0 freezes it) */
-export const TILT_PITCH = 0.06
+export const TILT_PITCH = 0
 
 /** pointer turns the logo left/right (0 freezes it) */
 export const TILT_YAW = 0
@@ -45,16 +45,16 @@ export const TILT_YAW = 0
 /* ─── animation ─────────────────────────────────────────────── */
 
 /** opening width, as a fraction of the viewport */
-export const START_CAMERA = 0.7
+export const START_CAMERA = 0.65
 
 /** flight duration, ms */
-export const DUR = 950
+export const DUR = 1000
 
 /** landed width, as a fraction of the viewport */
-export const DOCK_W = 0.34
+export const DOCK_W = 0.5
 
 /** landed centre height — 0.5 is dead centre, lower sits higher up */
 export const DOCK_Y = 0.3
 
 /** supporting line's height, clear of the fan below the caps */
-export const SAY_Y = 0.44
+export const SAY_Y = 0.46

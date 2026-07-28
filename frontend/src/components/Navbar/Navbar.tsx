@@ -26,10 +26,10 @@ export function Navbar() {
 
           <a
             href="#"
-            className="inline-flex items-center gap-2 rounded-md bg-fill px-7 py-3 text-[17px]
+            className="inline-flex items-center gap-2 rounded-md bg-fill px-7 py-2 text-[17px]
               whitespace-nowrap text-on-fill transition-transform motion-safe:hover:-translate-y-px"
           >
-            create account
+            register
             <span aria-hidden="true"></span>
           </a>
         </div>

@@ -14,7 +14,7 @@ export function Hero() {
         <main className="mx-auto w-full max-w-page flex-1 px-pad">
           {docked && (
             <p
-              style={{ top: `${SAY_Y * 90}svh` }}
+              style={{ top: `${SAY_Y * 100}svh` }}
               className="absolute inset-x-0 mx-auto max-w-[60ch] text-center text-[clamp(13.5px,1.6vw,16px)] text-balance text-ink-2"
             >
               A slice of your own server, reachable from your phone
