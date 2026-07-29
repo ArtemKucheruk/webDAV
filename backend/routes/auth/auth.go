@@ -84,9 +84,24 @@ func LoginUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) err
 
 	logger.Info().Str("user", userData.Email).Msg("user logged in")
 
+	ctx := c.Request().Context()
+	if cookie, err := c.Cookie("session_id"); err == nil {
+		if err := cache.DeleteSessionByID(ctx, redis, cookie.Value); err != nil {
+			logger.Err(err).Str("session", "session:"+cookie.Value).Msg("failed to delete user session")
+		} else {
+			logger.Info().Str("session", cookie.Value).Msg("session was deleted")
+		}
+	}
 	if err := cache.CreateSession(c, redis, user.ID, logger); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to create session")
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{"id": user.ID})
+}
+
+func LogoutUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) error {
+	if err := cache.DeleteSession(c, redis, logger); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete user session")
+	}
+	return c.NoContent(http.StatusOK)
 }
