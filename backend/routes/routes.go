@@ -16,8 +16,13 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client) {
 		r.POST("/create", func(c *echo.Context) error {
 			return auth.RegisterUser(c, logger, redis)
 		})
+
 		r.POST("/login", func(c *echo.Context) error {
 			return auth.LoginUser(c, logger, redis)
+		})
+
+		r.POST("/logout", func(c *echo.Context) error {
+			return auth.LogoutUser(c, logger, redis)
 		})
 	})
 }
