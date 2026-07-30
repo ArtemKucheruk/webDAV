@@ -2,14 +2,18 @@ package cache
 
 import (
 	"context"
+	"errors"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/ArtemKucheruk/webDAV.git/utils"
 	"github.com/labstack/echo/v5"
-	"github.com/redis/go-redis/v9"
+	redis "github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 )
+
+var ErrSessionNotFound = errors.New("session not found")
 
 func CreateSession(c *echo.Context, redis *redis.Client, userID int32, logger *zerolog.Logger) error {
 	sessionID, err := utils.GenerateSessionId()
@@ -63,4 +67,20 @@ func DeleteSession(c *echo.Context, redis *redis.Client, logger *zerolog.Logger)
 
 func DeleteSessionByID(ctx context.Context, redis *redis.Client, sessionID string) error {
 	return redis.Del(ctx, "session:"+sessionID).Err()
+}
+
+func GetSession(ctx context.Context, rdb *redis.Client, logger *zerolog.Logger, sessionID string) (int32, error) {
+	userID, err := rdb.Get(ctx, "session:"+sessionID).Result()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return 0, ErrSessionNotFound
+		}
+		logger.Err(err).Msg("redis session lookup failed")
+		return 0, err
+	}
+	parsedUserID, err := strconv.ParseInt(userID, 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return int32(parsedUserID), nil
 }
