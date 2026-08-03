@@ -12,8 +12,11 @@ func InitLogger() zerolog.Logger {
 	return logger
 }
 
-var Logger = InitLogger()
-var AppLogger = Logger.With().Str("component", "DB").Logger()
-var DBLogger = Logger.With().Str("component", "DB").Logger()
-var ApiLogger = Logger.With().Str("component", "api").Logger()
-var RedisLogger = Logger.With().Str("component", "redis").Logger()
+var (
+	Logger        = InitLogger()
+	AppLogger     = Logger.With().Str("component", "DB").Logger()
+	DBLogger      = Logger.With().Str("component", "DB").Logger()
+	ApiLogger     = Logger.With().Str("component", "api").Logger()
+	RedisLogger   = Logger.With().Str("component", "redis").Logger()
+	StorageLogger = Logger.With().Str("component", "storage").Logger()
+)

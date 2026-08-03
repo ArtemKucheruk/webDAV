@@ -8,6 +8,7 @@ import (
 	"github.com/ArtemKucheruk/webDAV.git/cache"
 	"github.com/ArtemKucheruk/webDAV.git/db"
 	"github.com/ArtemKucheruk/webDAV.git/routes"
+	"github.com/ArtemKucheruk/webDAV.git/storage"
 	"github.com/ArtemKucheruk/webDAV.git/utils"
 )
 
@@ -25,6 +26,10 @@ func main() {
 	redisStruct := &cache.Redis{
 		Client: *redisClient,
 		Logger: &utils.RedisLogger,
+	}
+
+	_ = &storage.Storage{
+		Logger: &utils.StorageLogger,
 	}
 
 	e := echo.New()
