@@ -46,15 +46,16 @@ void main(){
   float fill = max(dot(N, ${FILL_DIR}), 0.0);
 
   // caps hold the colour, walls wash into the room
-  vec3 pale = mix(base, room, 0.87);
-  vec3 col = mix(pale, base * (0.84 + 0.26 * key + 0.10 * fill), pow(facing, 0.5));
+  vec3 lit = base * (0.80 + 0.22 * key + 0.10 * fill);
+  vec3 pale = mix(lit * 0.85, room, 0.15);
+  vec3 col = mix(pale, lit, pow(facing, 0.35));
   // the tail sits further away, so more room in front of it
-  col = mix(col, room, pow(vT, 0.72) * 0.95);
+  col = mix(col, room, pow(vT, 1.05) * 0.99);
   // grazing edges melt out
-  col = mix(col, room, pow(1.0 - facing, 3.0) * 0.42);
+  col = mix(col, room, pow(1.0 - facing, 3.0) * 0.22);
   // one tight sheen, caps only
   vec3 H = normalize(${KEY_DIR} + V);
-  col += pow(max(dot(N, H), 0.0), 66.0) * facing * (1.0 - vT) * 0.26;
+  col += pow(max(dot(N, H), 0.0), 48.0) * facing * (1.0 - vT) * 0.08;
 
   col = mix(col, room, uFade);
   gl_FragColor = vec4(col, 1.0);

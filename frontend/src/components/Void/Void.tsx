@@ -1,14 +1,23 @@
 import { useEffect, useRef } from 'react'
 import { createScene } from '@/scene'
 
-export function Void() {
+interface VoidProps {
+  /** fired once when the logo finishes its flight */
+  onDock?: () => void
+}
+
+export function Void({ onDock }: VoidProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const onDockRef = useRef(onDock)
+  useEffect(() => {
+    onDockRef.current = onDock
+  })
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const scene = createScene(canvas)
+    const scene = createScene(canvas, { onDock: () => onDockRef.current?.() })
     if (!scene) return // no WebGL — the CSS background stands in
 
     const onResize = () => scene.resize()
