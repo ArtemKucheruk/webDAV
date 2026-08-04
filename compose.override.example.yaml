@@ -18,3 +18,8 @@ services:
     ports:
       - "127.0.0.1:[host_port]:[container_port]"
     restart: unless-stopped
+
+  beszel:
+    ports:
+      - "[host_port]:[container_port]"
+    restart: unless-stopped

@@ -47,3 +47,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# beszel monitoring system
+beszel_data/
+beszel_agent_data/
+beszel_socket/
