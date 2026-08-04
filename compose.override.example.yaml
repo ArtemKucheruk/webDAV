@@ -23,3 +23,8 @@ services:
     ports:
       - "[host_port]:[container_port]"
     restart: unless-stopped
+
+  dozzle:
+    ports:
+      - "[host_port]:[container_port]"
+    restart: unless-stopped

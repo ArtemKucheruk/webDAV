@@ -1,0 +1,5 @@
+users:
+  admin:
+    email: email@example.com
+    name: name
+    password: password_hash
