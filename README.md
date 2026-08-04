@@ -59,3 +59,34 @@ create a new migration
 ```
 make migrate-create name=add_users_table
 ```
+
+### Monitoring
+
+**Beszel** (host/container metrics) — `beszel` has no TOKEN/KEY of its own to generate; they come from the hub after it's running:
+
+```bash
+docker compose up -d beszel
+```
+
+Open the hub UI (`BESZEL_URL` in `.env`, e.g. `http://localhost:8090`), create an admin account, then **Add System**. For the unix-socket setup used here, set **Host / IP** to `/beszel_socket/beszel.sock`. Copy the generated **Public Key** and **Token** into `.env`:
+
+```
+BESZEL_KEY="ssh-ed25519 AAAA..."
+BESZEL_TOKEN=...
+```
+
+(quote `BESZEL_KEY` if your shell/tool needs it — it contains a space)
+
+Then start the agent:
+
+```bash
+docker compose up -d beszel-agent
+```
+
+**Dozzle** (container log viewer) — generate a bcrypt password hash for `dozzle_data/users.yaml` (see `dozzle_data/users.example.yaml` for the file shape):
+
+```bash
+docker run --rm amir20/dozzle generate -p yourpassword yourusername --name "Your Name"
+```
+
+Copy the printed `password:` hash into `dozzle_data/users.yaml`.

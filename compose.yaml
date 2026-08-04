@@ -43,6 +43,39 @@ services:
     depends_on:
       - backend
 
+  beszel:
+    image: henrygd/beszel:latest
+    container_name: beszel
+    restart: unless-stopped
+    environment:
+      APP_URL: ${BESZEL_URL}
+    volumes:
+      - ./beszel_data:/beszel_data
+      - ./beszel_socket:/beszel_socket
+
+  beszel-agent:
+    image: henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./beszel_agent_data:/var/lib/beszel-agent
+      - ./beszel_socket:/beszel_socket
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      LISTEN: /beszel_socket/beszel.sock
+      TOKEN: ${BESZEL_TOKEN}
+      KEY: ${BESZEL_KEY}
+
+  dozzle:
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dozzle_data:/data
+    environment:
+      - DOZZLE_ENABLE_ACTIONS=true
+      - DOZZLE_AUTH_PROVIDER=simple
+
 volumes:
   pgdata:
   redis-data:

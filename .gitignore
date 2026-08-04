@@ -47,3 +47,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# beszel monitoring system
+beszel_data/
+beszel_agent_data/
+beszel_socket/
+
+
+# dozzle docker continer log system
+dozzle_data/users.yaml
+dozzle_data/*/
