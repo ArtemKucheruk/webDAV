@@ -38,3 +38,15 @@ func (s Storage) Save(userID int, fileID int, filename string, src io.Reader) (d
 
 	return fullPath, nil
 }
+
+func (s Storage) Read(userID int, fileID int, filename string) (io.ReadCloser, error) {
+	filename = filepath.Base(filename)
+	fullPath := filepath.Join(fmt.Sprintf("data/%d", userID), fmt.Sprintf("%d_%s", fileID, filename))
+
+	file, err := os.Open(fullPath)
+	if err != nil {
+		s.Logger.Err(err).Int("fileID", fileID).Msg("failed to open file")
+		return nil, err
+	}
+	return file, nil
+}
