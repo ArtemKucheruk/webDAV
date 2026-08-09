@@ -8,6 +8,15 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type File struct {
+	ID        int32
+	UserID    int32
+	Filename  string
+	FileType  string
+	DiskPath  string
+	CreatedAt pgtype.Timestamptz
+}
+
 type User struct {
 	ID           int32
 	Email        string

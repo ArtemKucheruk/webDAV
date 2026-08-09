@@ -69,8 +69,13 @@ func DeleteSessionByID(ctx context.Context, redis *redis.Client, sessionID strin
 	return redis.Del(ctx, "session:"+sessionID).Err()
 }
 
-func GetSession(ctx context.Context, rdb *redis.Client, logger *zerolog.Logger, sessionID string) (int32, error) {
-	userID, err := rdb.Get(ctx, "session:"+sessionID).Result()
+func GetSession(c *echo.Context, ctx context.Context, rdb *redis.Client, logger *zerolog.Logger) (userID int32, err error) {
+	sessionID, err := c.Cookie("session_id")
+	if err != nil {
+		return 0, ErrSessionNotFound
+	}
+
+	rawUserID, err := rdb.Get(ctx, "session:"+sessionID.Value).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return 0, ErrSessionNotFound
@@ -78,7 +83,7 @@ func GetSession(ctx context.Context, rdb *redis.Client, logger *zerolog.Logger, 
 		logger.Err(err).Msg("redis session lookup failed")
 		return 0, err
 	}
-	parsedUserID, err := strconv.ParseInt(userID, 10, 32)
+	parsedUserID, err := strconv.ParseInt(rawUserID, 10, 32)
 	if err != nil {
 		return 0, err
 	}

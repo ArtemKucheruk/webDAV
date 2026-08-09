@@ -13,12 +13,8 @@ import (
 func RequireSession(redis *redis.Client, logger *zerolog.Logger) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c *echo.Context) error {
-			cookie, err := c.Cookie("session_id")
-			if err != nil {
-				return echo.NewHTTPError(http.StatusUnauthorized, "missing session")
-			}
 			ctx := c.Request().Context()
-			userID, err := cache.GetSession(ctx, redis, logger, cookie.Value)
+			userID, err := cache.GetSession(c, ctx, redis, logger)
 			if err != nil {
 				if errors.Is(err, cache.ErrSessionNotFound) {
 					return echo.NewHTTPError(http.StatusUnauthorized, "invalid session")

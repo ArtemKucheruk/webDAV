@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/ArtemKucheruk/webDAV.git/routes/auth"
+	"github.com/ArtemKucheruk/webDAV.git/routes/files"
 	"github.com/labstack/echo/v5"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
@@ -23,6 +24,12 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client) {
 
 		r.POST("/logout", func(c *echo.Context) error {
 			return auth.LogoutUser(c, logger, redis)
+		})
+	})
+
+	Group(api, "/file", func(r *echo.Group) {
+		r.GET("/get_all", func(c *echo.Context) error {
+			return files.GetAllUserFiles(c, logger, redis)
 		})
 	})
 }
