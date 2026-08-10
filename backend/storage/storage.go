@@ -50,3 +50,14 @@ func (s Storage) Read(userID int, fileID int, filename string) (io.ReadCloser, e
 	}
 	return file, nil
 }
+
+func (s Storage) DeleteFile(userID int, fileID int, filename string) error {
+	filename = filepath.Base(filename)
+	fullPath := filepath.Join(fmt.Sprintf("data/%d", userID), fmt.Sprintf("%d_%s", fileID, filename))
+
+	if err := os.Remove(fullPath); err != nil {
+		s.Logger.Err(err).Str("filePath", fullPath).Msg("failed to delete file")
+		return err
+	}
+	return nil
+}

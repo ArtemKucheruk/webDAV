@@ -9,6 +9,23 @@ import (
 	"context"
 )
 
+const deleteFile = `-- name: DeleteFile :one
+delete from files where id = $1 and user_id = $2
+returning filename
+`
+
+type DeleteFileParams struct {
+	ID     int32
+	UserID int32
+}
+
+func (q *Queries) DeleteFile(ctx context.Context, arg DeleteFileParams) (string, error) {
+	row := q.db.QueryRow(ctx, deleteFile, arg.ID, arg.UserID)
+	var filename string
+	err := row.Scan(&filename)
+	return filename, err
+}
+
 const getAllUserFiles = `-- name: GetAllUserFiles :many
 select filename from files where user_id = $1
 `
@@ -31,4 +48,15 @@ func (q *Queries) GetAllUserFiles(ctx context.Context, userID int32) ([]string, 
 		return nil, err
 	}
 	return items, nil
+}
+
+const getFileName = `-- name: GetFileName :one
+select filename from files where id = $1
+`
+
+func (q *Queries) GetFileName(ctx context.Context, id int32) (string, error) {
+	row := q.db.QueryRow(ctx, getFileName, id)
+	var filename string
+	err := row.Scan(&filename)
+	return filename, err
 }

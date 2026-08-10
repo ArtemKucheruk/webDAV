@@ -28,14 +28,14 @@ func main() {
 		Logger: &utils.RedisLogger,
 	}
 
-	_ = &storage.Storage{
+	storageStruct := &storage.Storage{
 		Logger: &utils.StorageLogger,
 	}
 
 	e := echo.New()
 
 	api := e.Group("/api")
-	routes.SetupRoutes(api, &utils.ApiLogger, &redisStruct.Client)
+	routes.SetupRoutes(api, &utils.ApiLogger, &redisStruct.Client, storageStruct)
 
 	err := e.Start(":8080")
 	if err != nil {
