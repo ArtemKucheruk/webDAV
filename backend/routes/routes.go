@@ -36,5 +36,9 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 		r.POST("/delete", func(c *echo.Context) error {
 			return files.DeleteFile(c, logger, redis, storage)
 		})
+
+		r.POST("/upload", func(c *echo.Context) error {
+			return files.UploadUserFile(c, logger, redis, storage)
+		})
 	})
 }

@@ -9,6 +9,33 @@ import (
 	"context"
 )
 
+const createFileRecord = `-- name: CreateFileRecord :one
+insert into files (id, user_id, filename, file_type, disk_path)
+  values ($1, $2, $3, $4, $5)
+  returning id
+`
+
+type CreateFileRecordParams struct {
+	ID       int32
+	UserID   int32
+	Filename string
+	FileType string
+	DiskPath string
+}
+
+func (q *Queries) CreateFileRecord(ctx context.Context, arg CreateFileRecordParams) (int32, error) {
+	row := q.db.QueryRow(ctx, createFileRecord,
+		arg.ID,
+		arg.UserID,
+		arg.Filename,
+		arg.FileType,
+		arg.DiskPath,
+	)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
+}
+
 const deleteFile = `-- name: DeleteFile :one
 delete from files where id = $1 and user_id = $2
 returning filename
@@ -59,4 +86,15 @@ func (q *Queries) GetFileName(ctx context.Context, id int32) (string, error) {
 	var filename string
 	err := row.Scan(&filename)
 	return filename, err
+}
+
+const getNextFileID = `-- name: GetNextFileID :one
+select nextval('files_id_seq')::int
+`
+
+func (q *Queries) GetNextFileID(ctx context.Context) (int32, error) {
+	row := q.db.QueryRow(ctx, getNextFileID)
+	var column_1 int32
+	err := row.Scan(&column_1)
+	return column_1, err
 }

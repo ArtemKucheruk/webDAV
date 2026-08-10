@@ -8,3 +8,12 @@ returning filename;
 
 -- name: GetFileName :one
 select filename from files where id = $1;
+
+-- name: GetNextFileID :one
+select nextval('files_id_seq')::int;
+
+
+-- name: CreateFileRecord :one
+insert into files (id, user_id, filename, file_type, disk_path)
+  values ($1, $2, $3, $4, $5)
+  returning id;
