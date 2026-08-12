@@ -8,6 +8,7 @@ import (
 	"github.com/ArtemKucheruk/webDAV.git/cache"
 	"github.com/ArtemKucheruk/webDAV.git/db"
 	"github.com/ArtemKucheruk/webDAV.git/routes"
+	"github.com/ArtemKucheruk/webDAV.git/storage"
 	"github.com/ArtemKucheruk/webDAV.git/utils"
 )
 
@@ -27,10 +28,14 @@ func main() {
 		Logger: &utils.RedisLogger,
 	}
 
+	storageStruct := &storage.Storage{
+		Logger: &utils.StorageLogger,
+	}
+
 	e := echo.New()
 
 	api := e.Group("/api")
-	routes.SetupRoutes(api, &utils.ApiLogger, &redisStruct.Client)
+	routes.SetupRoutes(api, &utils.ApiLogger, &redisStruct.Client, storageStruct)
 
 	err := e.Start(":8080")
 	if err != nil {

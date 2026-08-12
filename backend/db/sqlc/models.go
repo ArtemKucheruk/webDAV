@@ -8,10 +8,19 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type File struct {
+	ID        int32              `json:"id"`
+	UserID    int32              `json:"user_id"`
+	Filename  string             `json:"filename"`
+	FileType  string             `json:"file_type"`
+	DiskPath  string             `json:"disk_path"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
 type User struct {
-	ID           int32
-	Email        string
-	PasswordHash string
-	CreatedAt    pgtype.Timestamptz
-	Active       bool
+	ID           int32              `json:"id"`
+	Email        string             `json:"email"`
+	PasswordHash string             `json:"password_hash"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+	Active       bool               `json:"active"`
 }

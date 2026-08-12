@@ -14,8 +14,8 @@ update users set email = $1 where id = $2
 `
 
 type ChangeUserEmailParams struct {
-	Email string
-	ID    int32
+	Email string `json:"email"`
+	ID    int32  `json:"id"`
 }
 
 func (q *Queries) ChangeUserEmail(ctx context.Context, arg ChangeUserEmailParams) error {
@@ -28,8 +28,8 @@ update users set password_hash = $1 where id = $2
 `
 
 type ChangeUserPasswordParams struct {
-	PasswordHash string
-	ID           int32
+	PasswordHash string `json:"password_hash"`
+	ID           int32  `json:"id"`
 }
 
 func (q *Queries) ChangeUserPassword(ctx context.Context, arg ChangeUserPasswordParams) error {
@@ -44,8 +44,8 @@ insert into users (email, password_hash)
 `
 
 type CreateUserParams struct {
-	Email        string
-	PasswordHash string
+	Email        string `json:"email"`
+	PasswordHash string `json:"password_hash"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, error) {
