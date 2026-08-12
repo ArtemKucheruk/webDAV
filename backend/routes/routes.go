@@ -40,5 +40,9 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 		r.POST("/upload", func(c *echo.Context) error {
 			return files.UploadUserFile(c, logger, redis, storage)
 		})
+
+		r.GET("/download", func(c *echo.Context) error {
+			return files.DownloadUserFile(c, logger, redis, storage)
+		})
 	})
 }

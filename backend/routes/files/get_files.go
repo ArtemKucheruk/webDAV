@@ -31,3 +31,6 @@ func GetAllUserFiles(c *echo.Context, logger *zerolog.Logger, redis *redis.Clien
 	}
 	return c.JSON(http.StatusOK, map[string]any{"files": userFiles})
 }
+
+// need to change return
+// needs id, file_name and file_type to show on front

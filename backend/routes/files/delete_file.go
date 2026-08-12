@@ -30,7 +30,10 @@ func DeleteFile(c *echo.Context, logger *zerolog.Logger, redis *redis.Client, s 
 
 	queries := sqlc.New(db.Pool)
 
-	filename, err := queries.GetFileName(ctx, deleteFileRequest.FileID)
+	filename, err := queries.GetFileName(ctx, sqlc.GetFileNameParams{
+		ID:     deleteFileRequest.FileID,
+		UserID: userID,
+	})
 	if err != nil {
 		logger.Err(err).Int32("file_id", deleteFileRequest.FileID).Msg("failed to get filename name of fileID")
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get filename name of fileID")

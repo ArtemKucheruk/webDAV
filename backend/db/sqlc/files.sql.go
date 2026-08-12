@@ -78,11 +78,16 @@ func (q *Queries) GetAllUserFiles(ctx context.Context, userID int32) ([]string, 
 }
 
 const getFileName = `-- name: GetFileName :one
-select filename from files where id = $1
+select filename from files where id = $1 and user_id = $2
 `
 
-func (q *Queries) GetFileName(ctx context.Context, id int32) (string, error) {
-	row := q.db.QueryRow(ctx, getFileName, id)
+type GetFileNameParams struct {
+	ID     int32
+	UserID int32
+}
+
+func (q *Queries) GetFileName(ctx context.Context, arg GetFileNameParams) (string, error) {
+	row := q.db.QueryRow(ctx, getFileName, arg.ID, arg.UserID)
 	var filename string
 	err := row.Scan(&filename)
 	return filename, err
