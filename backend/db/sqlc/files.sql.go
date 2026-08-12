@@ -16,11 +16,11 @@ insert into files (id, user_id, filename, file_type, disk_path)
 `
 
 type CreateFileRecordParams struct {
-	ID       int32
-	UserID   int32
-	Filename string
-	FileType string
-	DiskPath string
+	ID       int32  `json:"id"`
+	UserID   int32  `json:"user_id"`
+	Filename string `json:"filename"`
+	FileType string `json:"file_type"`
+	DiskPath string `json:"disk_path"`
 }
 
 func (q *Queries) CreateFileRecord(ctx context.Context, arg CreateFileRecordParams) (int32, error) {
@@ -42,8 +42,8 @@ returning filename
 `
 
 type DeleteFileParams struct {
-	ID     int32
-	UserID int32
+	ID     int32 `json:"id"`
+	UserID int32 `json:"user_id"`
 }
 
 func (q *Queries) DeleteFile(ctx context.Context, arg DeleteFileParams) (string, error) {
@@ -54,22 +54,28 @@ func (q *Queries) DeleteFile(ctx context.Context, arg DeleteFileParams) (string,
 }
 
 const getAllUserFiles = `-- name: GetAllUserFiles :many
-select filename from files where user_id = $1
+select id, filename, file_type from files where user_id = $1
 `
 
-func (q *Queries) GetAllUserFiles(ctx context.Context, userID int32) ([]string, error) {
+type GetAllUserFilesRow struct {
+	ID       int32  `json:"id"`
+	Filename string `json:"filename"`
+	FileType string `json:"file_type"`
+}
+
+func (q *Queries) GetAllUserFiles(ctx context.Context, userID int32) ([]GetAllUserFilesRow, error) {
 	rows, err := q.db.Query(ctx, getAllUserFiles, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []string
+	var items []GetAllUserFilesRow
 	for rows.Next() {
-		var filename string
-		if err := rows.Scan(&filename); err != nil {
+		var i GetAllUserFilesRow
+		if err := rows.Scan(&i.ID, &i.Filename, &i.FileType); err != nil {
 			return nil, err
 		}
-		items = append(items, filename)
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -82,8 +88,8 @@ select filename from files where id = $1 and user_id = $2
 `
 
 type GetFileNameParams struct {
-	ID     int32
-	UserID int32
+	ID     int32 `json:"id"`
+	UserID int32 `json:"user_id"`
 }
 
 func (q *Queries) GetFileName(ctx context.Context, arg GetFileNameParams) (string, error) {

@@ -1,5 +1,5 @@
 -- name: GetAllUserFiles :many
-select filename from files where user_id = $1;
+select id, filename, file_type from files where user_id = $1;
 
 
 -- name: DeleteFile :one
