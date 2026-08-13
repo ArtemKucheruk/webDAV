@@ -1,9 +1,9 @@
+import { Button } from '@/components/ui/Button'
+
 const DESTINATIONS = [
   { label: 'docs', href: '#' },
   { label: 'github', href: '#' },
 ]
-
-const LINK = 'text-[17px] text-ink-3 transition-colors hover:text-ink'
 
 export function Navbar() {
   return (
@@ -12,26 +12,22 @@ export function Navbar() {
         <ul className="flex items-center gap-8 sm:gap-12">
           {DESTINATIONS.map(({ label, href }) => (
             <li key={label}>
-              <a href={href} className={LINK}>
+              <Button variant="quiet" href={href}>
                 {label}
-              </a>
+              </Button>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center gap-6">
-          <a href="#" className={LINK}>
+          <Button variant="quiet" to="/login">
             sign in
-          </a>
+          </Button>
 
-          <a
-            href="#"
-            className="inline-flex items-center gap-2 rounded-md bg-fill px-7 py-2 text-[17px]
-              whitespace-nowrap text-on-fill transition-transform motion-safe:hover:-translate-y-px"
-          >
+          <Button to="/register">
             register
             <span aria-hidden="true"></span>
-          </a>
+          </Button>
         </div>
       </div>
     </nav>
