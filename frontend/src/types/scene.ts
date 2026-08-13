@@ -15,6 +15,8 @@ export type SceneUniforms = {
   uCam: IUniform<Vector3>
   /** 0 = solid, 1 = dissolved into the room */
   uFade: IUniform<number>
+  /** room brightness, 1 = lit, 0 = pure black */
+  uRoom: IUniform<number>
   uHalfW: IUniform<number>
   uHalfH: IUniform<number>
   uDepth: IUniform<number>

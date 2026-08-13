@@ -4,6 +4,7 @@ uniform vec3  uEnvTop;
 uniform vec3  uEnvBot;
 uniform vec2  uHot;
 uniform vec4  uLogo;   // xy = centre px, z = width px, w = strength
+uniform float uRoom;   // 1 = lit room, 0 = pure black
 
 vec3 envAt(vec2 fc){
   vec2 uv = fc / uRes;
@@ -20,7 +21,8 @@ vec3 envAt(vec2 fc){
   float sh = 1.0 - smoothstep(0.0, 0.52, length(rel));
   c *= 1.0 - sh * 0.085 * uLogo.w;
 
-  return c;
+  // last, so the additive hotspot dies too and 0 is truly 0
+  return c * uRoom;
 }
 `
 

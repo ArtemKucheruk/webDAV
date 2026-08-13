@@ -50,11 +50,46 @@ export const START_CAMERA = 0.65
 /** flight duration, ms */
 export const DUR = 1000
 
-/** landed width, as a fraction of the viewport */
-export const DOCK_W = 0.5
+/** landed width, as a fraction of t he viewport */
+export const DOCK_W_DEF = 0.5
 
 /** landed centre height — 0.5 is dead centre, lower sits higher up */
 export const DOCK_Y = 0.3
 
+/** auth width, how far the lens dollies in before the push takes over */
+export const DOCK_W_AUTH = 6
+
+/** auth centre height, held level with the hero so the exit stays straight */
+export const DOCK_Y_AUTH = DOCK_Y
+
+/** how far the logo travels at the camera, must clear the lens plus the extrusion */
+export const PUSH_AUTH = 8
+
+/** auth flight duration, ms, longer than the opening so the push reads */
+export const AUTH_DUR = 2400
+
 /** supporting line's height, clear of the fan below the caps */
 export const SAY_Y = 0.46
+
+/* ─── stages ────────────────────────────────────────────────── */
+
+/** a resting state for the whole scene, in viewport relative terms */
+export interface Stage {
+  /** logo width as a fraction of the viewport, above 1 the caps overfill it */
+  w: number
+  /** logo centre height, 0.5 is dead centre */
+  y: number
+  /** room brightness, 1 is lit and 0 is pure black */
+  room: number
+  /** units the logo travels toward the camera, past it means out of sight */
+  push: number
+}
+
+/** every state the scene settles at, flights just interpolate between two */
+export const STAGE = {
+  opening: { w: START_CAMERA, y: 0.5, room: 1, push: 0 },
+  hero: { w: DOCK_W_DEF, y: DOCK_Y, room: 1, push: 0 },
+  auth: { w: DOCK_W_AUTH, y: DOCK_Y_AUTH, room: 0, push: PUSH_AUTH },
+} satisfies Record<string, Stage>
+
+export type StageName = keyof typeof STAGE

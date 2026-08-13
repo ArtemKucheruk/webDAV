@@ -12,17 +12,31 @@ import {
   WebGLRenderer,
 } from 'three'
 import { solveCamera } from './motion/camera'
-import { ANCHOR, DUR, ENV_BOT, ENV_TOP, FOV, HALF_W, TILT_PITCH, TILT_YAW } from './config'
+import {
+  ANCHOR,
+  AUTH_DUR,
+  DUR,
+  ENV_BOT,
+  ENV_TOP,
+  FOV,
+  HALF_W,
+  STAGE,
+  TILT_PITCH,
+  TILT_YAW,
+} from './config'
+import type { Stage, StageName } from './config'
 import { SKY_FRAG, SKY_VERT } from './shaders/env'
-import { poseAt } from './motion/flight'
+import { poseOf, stageAt } from './motion/flight'
 import { loadLogo } from './geometry/decode'
 import { createLogoMaterial } from './shaders/logo'
 import type { SceneUniforms } from '@/types/scene'
 
 export interface SceneHandle {
   resize(): void
-  /** release the logo — the flight runs once */
+  /** release the logo, the opening flight runs once */
   launch(): void
+  /** fly to a stage from wherever the scene is right now */
+  flyTo(name: StageName): void
   /** pointer in -1..1, already inverted */
   setPointer(x: number, y: number): void
   /** redraw after something outside changed */
@@ -31,6 +45,8 @@ export interface SceneHandle {
 }
 
 export interface SceneOptions {
+  /** stage the scene opens on, hero waits at the opening for launch */
+  stage?: StageName
   onDock?: () => void
 }
 
@@ -53,6 +69,7 @@ export function createScene(
     uLogo: { value: new Vector4(0, 0, 1, 0) },
     uCam: { value: new Vector3() },
     uFade: { value: 0 },
+    uRoom: { value: 1 },
     uHalfW: { value: HALF_W },
     uHalfH: { value: 0.1 },
     uDepth: { value: 1 },
@@ -81,6 +98,8 @@ export function createScene(
   const pivot = new Object3D()
   scene.add(pivot)
 
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   let vw = 0
   let vh = 0
   let dpr = 1
@@ -91,12 +110,21 @@ export function createScene(
   let my = 0
   let tx = 0
   let ty = 0
+  /* 0 until the mesh arrives, nothing to cast a contact shadow before that */
+  let shadow = 0
 
-  /* flight: u runs 0 (opening) to 1 (docked) */
-  let u = 0
-  let launched = false
-  let dockedFired = false
+  /* flight: u runs 0 (at `from`) to 1 (settled on `to`) */
+  const initial: StageName = options.stage ?? 'hero'
+  const opensOnHero = initial === 'hero'
+  let from: Stage = opensOnHero ? STAGE.opening : STAGE[initial]
+  let to: Stage = from
+  let current: Stage = from
+  let u = 1
+  let dur = DUR
   let t0 = 0
+  /* a direct load of login is already past the opening */
+  let launched = !opensOnHero
+  let dockedFired = false
 
   function fireDock() {
     if (dockedFired) return
@@ -104,26 +132,44 @@ export function createScene(
     options.onDock?.()
   }
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    u = 1
-    launched = true
-    fireDock()
-  }
-
-  function applyPose() {
-    const pose = poseAt(u, vw, vh)
+  function applyStage() {
+    const pose = poseOf(current, vw, vh)
     const c = solveCamera(pose, vw, vh, depth)
     camera.position.set(c.x, c.y, c.z)
     camera.near = c.near
     camera.far = c.far
     camera.updateProjectionMatrix()
     uniforms.uCam.value.copy(camera.position)
+    // the mesh itself flies at the lens, nothing dissolves it
+    pivot.position.z = current.push
+    uniforms.uRoom.value = current.room
     uniforms.uLogo.value.set(
       pose.cx * dpr,
       (vh - pose.cy) * dpr,
       pose.w * dpr,
-      uniforms.uLogo.value.w,
+      // the shadow belongs to the lit room so it leaves with the light
+      shadow * current.room,
     )
+  }
+
+  /** always departs from the pose on screen, so a mid air turn never snaps */
+  function flyTo(name: StageName) {
+    const next = STAGE[name]
+    if (next === to) return // already there, or already on the way
+
+    launched = true
+    from = current
+    to = next
+    dur = next === STAGE.auth || from.room < 1 ? AUTH_DUR : DUR
+    u = reduced ? 1 : 0
+    t0 = performance.now()
+
+    if (u >= 1) {
+      current = to
+      applyStage()
+      if (to === STAGE.hero) fireDock()
+    }
+    wake()
   }
 
   function resize() {
@@ -134,7 +180,7 @@ export function createScene(
     renderer.setSize(vw, vh, false) // false: CSS owns the element size
     camera.aspect = vw / vh
     uniforms.uRes.value.set(vw * dpr, vh * dpr)
-    applyPose()
+    applyStage()
     wake()
   }
 
@@ -150,11 +196,12 @@ export function createScene(
   function frame() {
     raf = null
 
-    if (launched && u < 1) {
-      u = Math.min(1, (performance.now() - t0) / DUR)
-      applyPose()
+    if (u < 1) {
+      u = Math.min(1, (performance.now() - t0) / dur)
+      current = stageAt(from, to, u)
+      applyStage()
       dirty = true
-      if (u >= 1) fireDock()
+      if (u >= 1 && to === STAGE.hero) fireDock()
     }
 
     mx += (tx - mx) * 0.07
@@ -173,9 +220,7 @@ export function createScene(
 
   function launch() {
     if (launched) return
-    launched = true
-    t0 = performance.now()
-    wake()
+    flyTo('hero')
   }
 
   function setPointer(x: number, y: number) {
@@ -193,7 +238,7 @@ export function createScene(
       depth = d
       uniforms.uHalfH.value = halfH
       uniforms.uDepth.value = d
-      uniforms.uLogo.value.w = 1 // the contact shadow has something to sit under
+      shadow = 1 // the contact shadow has something to sit under
       logoMaterial = createLogoMaterial(uniforms)
       logo = new Mesh(geometry, logoMaterial)
       pivot.add(logo)
@@ -215,5 +260,8 @@ export function createScene(
 
   resize()
 
-  return { resize, launch, setPointer, wake, dispose }
+  // after resize, solveCamera divides by the viewport which is 0 until then
+  if (reduced && opensOnHero) flyTo('hero')
+
+  return { resize, launch, flyTo, setPointer, wake, dispose }
 }
