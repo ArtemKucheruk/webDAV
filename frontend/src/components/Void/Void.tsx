@@ -28,6 +28,9 @@ export function Void({ stage, onDock }: VoidProps) {
     const scene = createScene(canvas, {
       stage: stageRef.current,
       onDock: () => onDockRef.current?.(),
+      /* a css var rather than react state, so the html layer tracks the flight
+         frame for frame without a rerender */
+      onExit: (exit) => document.documentElement.style.setProperty('--exit', String(exit)),
     })
     if (!scene) return // no webgl, the css background stands in
     sceneRef.current = scene

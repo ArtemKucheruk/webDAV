@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
+import { Navbar } from '@/components/Navbar'
 import { Void } from '@/components/Void'
 import { Hero } from '@/pages/Hero'
 import { Login } from '@/pages/Login'
@@ -16,14 +17,20 @@ function App() {
   useAnimatedFavicon()
   const { pathname } = useLocation()
   const [docked, setDocked] = useState(false)
+  const stage = stageFor(pathname)
+
+  /* a direct load of an auth url never flies home, so it never docks */
+  const chrome = docked || stage === 'auth'
 
   return (
     <>
-      {/* outside routes on purpose, a route change must not remount the canvas */}
-      <Void stage={stageFor(pathname)} onDock={() => setDocked(true)} />
+      {/* all three sit outside routes, a route change must not remount them */}
+      <Void stage={stage} onDock={() => setDocked(true)} />
+      {chrome && <Navbar atAuth={stage === 'auth'} />}
+      {chrome && <Hero />}
 
       <Routes>
-        <Route path="/" element={<Hero docked={docked} />} />
+        <Route path="/" element={null} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
