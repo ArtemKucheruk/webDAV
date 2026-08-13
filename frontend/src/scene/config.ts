@@ -56,17 +56,20 @@ export const DOCK_W_DEF = 0.5
 /** landed centre height — 0.5 is dead centre, lower sits higher up */
 export const DOCK_Y = 0.3
 
-/** auth width, how far the lens dollies in before the push takes over */
-export const DOCK_W_AUTH = 6
+/* the auth move is a straight camera travel, both legs measured in docked
+   camera distances so it reads the same on any screen */
 
-/** auth centre height, held level with the hero so the exit stays straight */
-export const DOCK_Y_AUTH = DOCK_Y
+/** forward, past 1 the lens ends up through the wordmark's plane */
+export const AUTH_FWD = 1.3
 
-/** how far the logo travels at the camera, must clear the lens plus the extrusion */
-export const PUSH_AUTH = 8
+/** and under it, which is what lifts the logo out of the top of frame */
+export const AUTH_DOWN = 0.9
 
-/** auth flight duration, ms, longer than the opening so the push reads */
-export const AUTH_DUR = 2400
+/** auth flight duration, ms, longer than the opening so the climb reads */
+export const AUTH_DUR = 1600
+
+/** point in the flight where the room starts going out, the climb leads it */
+export const ROOM_LATE = 0.35
 
 /** supporting line's height, clear of the fan below the caps */
 export const SAY_Y = 0.46
@@ -81,15 +84,16 @@ export interface Stage {
   y: number
   /** room brightness, 1 is lit and 0 is pure black */
   room: number
-  /** units the logo travels toward the camera, past it means out of sight */
-  push: number
+  /** how far through the html layer the lens is, 0 is in front of it and 1 is past */
+  exit: number
 }
 
 /** every state the scene settles at, flights just interpolate between two */
 export const STAGE = {
-  opening: { w: START_CAMERA, y: 0.5, room: 1, push: 0 },
-  hero: { w: DOCK_W_DEF, y: DOCK_Y, room: 1, push: 0 },
-  auth: { w: DOCK_W_AUTH, y: DOCK_Y_AUTH, room: 0, push: PUSH_AUTH },
+  opening: { w: START_CAMERA, y: 0.5, room: 1, exit: 0 },
+  hero: { w: DOCK_W_DEF, y: DOCK_Y, room: 1, exit: 0 },
+  /* same framing as hero, the camera travel is what moves, not the pose */
+  auth: { w: DOCK_W_DEF, y: DOCK_Y, room: 0, exit: 1 },
 } satisfies Record<string, Stage>
 
 export type StageName = keyof typeof STAGE

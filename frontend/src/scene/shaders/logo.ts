@@ -21,7 +21,6 @@ void main(){
 }`,
     fragmentShader: `
 uniform vec3 uCam; uniform vec3 uC[4]; uniform vec2 uP[4]; uniform float uR[4];
-uniform float uFade;
 varying vec3 vN; varying vec3 vW; varying vec2 vG; varying float vT;
 ${ENV}
 
@@ -57,7 +56,7 @@ void main(){
   vec3 H = normalize(${KEY_DIR} + V);
   col += pow(max(dot(N, H), 0.0), 48.0) * facing * (1.0 - vT) * 0.08;
 
-  col = mix(col, room, uFade);
+  // keeps its own colour, it leaves by flying rather than by dissolving
   gl_FragColor = vec4(col, 1.0);
 }`,
   })

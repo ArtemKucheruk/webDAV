@@ -14,6 +14,8 @@ import {
 import { solveCamera } from './motion/camera'
 import {
   ANCHOR,
+  AUTH_DOWN,
+  AUTH_FWD,
   AUTH_DUR,
   DUR,
   ENV_BOT,
@@ -48,6 +50,8 @@ export interface SceneOptions {
   /** stage the scene opens on, hero waits at the opening for launch */
   stage?: StageName
   onDock?: () => void
+  /** every frame of a flight, so the html layer can move on the same clock */
+  onExit?: (exit: number) => void
 }
 
 export function createScene(
@@ -68,7 +72,6 @@ export function createScene(
     uHot: { value: new Vector2(0.5, 1) },
     uLogo: { value: new Vector4(0, 0, 1, 0) },
     uCam: { value: new Vector3() },
-    uFade: { value: 0 },
     uRoom: { value: 1 },
     uHalfW: { value: HALF_W },
     uHalfH: { value: 0.1 },
@@ -116,7 +119,8 @@ export function createScene(
   /* flight: u runs 0 (at `from`) to 1 (settled on `to`) */
   const initial: StageName = options.stage ?? 'hero'
   const opensOnHero = initial === 'hero'
-  let from: Stage = opensOnHero ? STAGE.opening : STAGE[initial]
+  let toName: StageName = opensOnHero ? 'opening' : initial
+  let from: Stage = STAGE[toName]
   let to: Stage = from
   let current: Stage = from
   let u = 1
@@ -135,39 +139,43 @@ export function createScene(
   function applyStage() {
     const pose = poseOf(current, vw, vh)
     const c = solveCamera(pose, vw, vh, depth)
-    camera.position.set(c.x, c.y, c.z)
+
+    /* one straight line, forward into the wordmark and a little under it. the
+       pose is what the lens starts from, exit is how far along it has travelled */
+    const travel = current.exit * c.z
+    camera.position.set(c.x, c.y - AUTH_DOWN * travel, c.z - AUTH_FWD * travel)
     camera.near = c.near
     camera.far = c.far
     camera.updateProjectionMatrix()
     uniforms.uCam.value.copy(camera.position)
-    // the mesh itself flies at the lens, nothing dissolves it
-    pivot.position.z = current.push
     uniforms.uRoom.value = current.room
+    options.onExit?.(current.exit)
     uniforms.uLogo.value.set(
       pose.cx * dpr,
       (vh - pose.cy) * dpr,
       pose.w * dpr,
-      // the shadow belongs to the lit room so it leaves with the light
-      shadow * current.room,
+      // the shadow is pinned to the docked pose, so it goes as the lens leaves
+      shadow * current.room * (1 - current.exit),
     )
   }
 
   /** always departs from the pose on screen, so a mid air turn never snaps */
   function flyTo(name: StageName) {
-    const next = STAGE[name]
-    if (next === to) return // already there, or already on the way
+    if (name === toName) return // already there, or already on the way
 
+    const leavingAuth = toName === 'auth'
     launched = true
     from = current
-    to = next
-    dur = next === STAGE.auth || from.room < 1 ? AUTH_DUR : DUR
+    toName = name
+    to = STAGE[name]
+    dur = name === 'auth' || leavingAuth ? AUTH_DUR : DUR
     u = reduced ? 1 : 0
     t0 = performance.now()
 
     if (u >= 1) {
       current = to
       applyStage()
-      if (to === STAGE.hero) fireDock()
+      if (name === 'hero') fireDock()
     }
     wake()
   }
@@ -201,7 +209,7 @@ export function createScene(
       current = stageAt(from, to, u)
       applyStage()
       dirty = true
-      if (u >= 1 && to === STAGE.hero) fireDock()
+      if (u >= 1 && toName === 'hero') fireDock()
     }
 
     mx += (tx - mx) * 0.07
@@ -242,7 +250,7 @@ export function createScene(
       logoMaterial = createLogoMaterial(uniforms)
       logo = new Mesh(geometry, logoMaterial)
       pivot.add(logo)
-      resize() // re-place now that the real depth is known
+      resize() // re-place now that the real height and depth are known
     })
     .catch((err: unknown) => {
       if (!controller.signal.aborted) console.error(err)
