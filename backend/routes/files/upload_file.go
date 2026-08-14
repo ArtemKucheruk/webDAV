@@ -20,6 +20,17 @@ type fileUploadStruct struct {
 	File *multipart.FileHeader `form:"file"`
 }
 
+// UploadUserFile godoc
+// @Summary      Upload a file
+// @Tags         files
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        file  formData  file  true  "file to upload"
+// @Success      200   {object}  map[string]any
+// @Failure      400   {object}  map[string]string
+// @Failure      401   {object}  map[string]string
+// @Failure      500   {object}  map[string]string
+// @Router       /file/upload [post]
 func UploadUserFile(c *echo.Context, logger *zerolog.Logger, redis *redis.Client, s *storage.Storage) error {
 	var fileUploadData fileUploadStruct
 	ctx := c.Request().Context()

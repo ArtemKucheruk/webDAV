@@ -12,6 +12,14 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// GetAllUserFiles godoc
+// @Summary      List the current user's files
+// @Tags         files
+// @Produce      json
+// @Success      200  {object}  map[string]any
+// @Failure      401  {object}  map[string]string  "invalid session"
+// @Failure      500  {object}  map[string]string
+// @Router       /file/get_all [get]
 func GetAllUserFiles(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) error {
 	ctx := c.Request().Context()
 	userID, err := cache.GetUserIDFromSession(c, ctx, redis, logger)

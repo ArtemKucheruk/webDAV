@@ -16,6 +16,16 @@ type deleteFileRequest struct {
 	FileID int32 `json:"file_id"`
 }
 
+// DeleteFile godoc
+// @Summary      Delete a file
+// @Tags         files
+// @Accept       json
+// @Param        body  body  deleteFileRequest  true  "file_id"
+// @Success      200
+// @Failure      400  {object}  map[string]string
+// @Failure      401  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /file/delete [post]
 func DeleteFile(c *echo.Context, logger *zerolog.Logger, redis *redis.Client, s *storage.Storage) error {
 	var deleteFileRequest deleteFileRequest
 	ctx := c.Request().Context()
