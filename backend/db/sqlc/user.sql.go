@@ -9,6 +9,15 @@ import (
 	"context"
 )
 
+const activateUser = `-- name: ActivateUser :exec
+update users set active = true where id = $1
+`
+
+func (q *Queries) ActivateUser(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, activateUser, id)
+	return err
+}
+
 const changeUserEmail = `-- name: ChangeUserEmail :exec
 update users set email = $1 where id = $2
 `
@@ -64,25 +73,8 @@ func (q *Queries) DeactivateUser(ctx context.Context, id int32) error {
 	return err
 }
 
-const getActiveUserByEmail = `-- name: GetActiveUserByEmail :one
-select id, email, password_hash, created_at, active from users where email = $1 and active = true
-`
-
-func (q *Queries) GetActiveUserByEmail(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRow(ctx, getActiveUserByEmail, email)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.PasswordHash,
-		&i.CreatedAt,
-		&i.Active,
-	)
-	return i, err
-}
-
 const getUserByEmail = `-- name: GetUserByEmail :one
-select id, email, password_hash, created_at, active from users where email = $1 and active = true
+select id, email, password_hash, created_at, active from users where email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
