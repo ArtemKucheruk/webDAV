@@ -84,6 +84,13 @@ func LoginUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) err
 
 	logger.Info().Str("user", userData.Email).Msg("user logged in")
 
+	if !user.Active {
+		if err := queries.ActivateUser(c.Request().Context(), user.ID); err != nil {
+			logger.Err(err).Int32("userID", user.ID).Msg("failed to change user status to active")
+			return echo.NewHTTPError(http.StatusInternalServerError, "failed to change user status to active")
+		}
+	}
+
 	ctx := c.Request().Context()
 	if cookie, err := c.Cookie("session_id"); err == nil {
 		if err := cache.DeleteSessionByID(ctx, redis, cookie.Value); err != nil {
