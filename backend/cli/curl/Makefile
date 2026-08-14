@@ -1,7 +1,7 @@
 BASE_URL ?= http://127.0.0.1:8080/api
 COOKIE_JAR ?= cookies.txt
 
-.PHONY: ping register login logout list upload delete download
+.PHONY: ping register login logout deactivate list upload delete download
 
 ping:
 	curl -s $(BASE_URL)/health/ping -w "\nHTTP %{http_code}\n"
@@ -21,6 +21,11 @@ login:
 logout:
 	curl -s -b $(COOKIE_JAR) -X POST $(BASE_URL)/user/logout \
 		-w "\nHTTP %{http_code}\n"
+
+deactivate:
+	curl -s -b $(COOKIE_JAR) -X POST $(BASE_URL)/user/settings/deactivate \
+		-w "\nHTTP %{http_code}\n"
+
 
 list:
 	curl -s -b $(COOKIE_JAR) $(BASE_URL)/file/get_all \
