@@ -29,6 +29,10 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 			return auth.LogoutUser(c, logger, redis)
 		})
 
+		r.GET("/me", func(c *echo.Context) error {
+			return auth.GetUserInfo(c, logger, redis)
+		})
+
 		// user/settings/[endpoint]
 		Group(r, "/settings", func(r *echo.Group) {
 			r.POST("/deactivate", func(c *echo.Context) error {
