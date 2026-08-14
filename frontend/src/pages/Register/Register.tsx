@@ -1,4 +1,30 @@
-/** the form lands here later, for now the stage itself is the whole page */
+import { Link, useNavigate } from 'react-router-dom'
+import { AuthForm } from '@/components/AuthForm'
+import { register } from '@/lib/api'
+
 export function Register() {
-  return <div className="auth-in relative z-10 min-h-svh px-pad pt-[20svh]" />
+  const navigate = useNavigate()
+
+  return (
+    <div className="auth-in relative z-10 flex min-h-svh justify-center px-pad pt-[20svh]">
+      <AuthForm
+        title="register"
+        action="register"
+        autoComplete="new-password"
+        confirm
+        onSubmit={async (credentials) => {
+          await register(credentials)
+          navigate('/')
+        }}
+        footer={
+          <>
+            already have an account?{' '}
+            <Link to="/login" className="text-ink transition-colors hover:text-ink-2">
+              sign in
+            </Link>
+          </>
+        }
+      />
+    </div>
+  )
 }

@@ -42,3 +42,5 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 }
 
 export const login = (credentials: Credentials) => post<AuthResult>('/user/login', credentials)
+
+export const register = (credentials: Credentials) => post<AuthResult>('/user/create', credentials)
