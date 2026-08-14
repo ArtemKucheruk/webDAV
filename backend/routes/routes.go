@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/ArtemKucheruk/webDAV.git/routes/auth"
 	"github.com/ArtemKucheruk/webDAV.git/routes/files"
+	"github.com/ArtemKucheruk/webDAV.git/routes/settings"
 	"github.com/ArtemKucheruk/webDAV.git/storage"
 	"github.com/labstack/echo/v5"
 	"github.com/redis/go-redis/v9"
@@ -14,6 +15,7 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 		r.GET("/ping", Ping)
 	})
 
+	// /user/[endpoint]
 	Group(api, "/user", func(r *echo.Group) {
 		r.POST("/create", func(c *echo.Context) error {
 			return auth.RegisterUser(c, logger, redis)
@@ -26,8 +28,16 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 		r.POST("/logout", func(c *echo.Context) error {
 			return auth.LogoutUser(c, logger, redis)
 		})
+
+		// user/settings/[endpoint]
+		Group(r, "/settings", func(r *echo.Group) {
+			r.POST("/deactivate", func(c *echo.Context) error {
+				return settings.DeactivateUser(c, logger, redis)
+			})
+		})
 	})
 
+	// file/[endpoint]
 	Group(api, "/file", func(r *echo.Group) {
 		r.GET("/get_all", func(c *echo.Context) error {
 			return files.GetAllUserFiles(c, logger, redis)

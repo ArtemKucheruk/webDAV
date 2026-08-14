@@ -4,7 +4,8 @@ insert into users (email, password_hash)
   returning id;
 
 -- name: GetUserByEmail :one
-select * from users where email = $1 and active = true;
+select * from users where email = $1;
+
 
 -- name: GetUserById :one 
 select * from users where id = $1;
@@ -16,5 +17,9 @@ update users set email = $1 where id = $2;
 update users set password_hash = $1 where id = $2;
 
 
+-- name: DeactivateUser :exec
+update users set active = false where id = $1;
 
+-- name: ActivateUser :exec
+update users set active = true where id = $1;
 
