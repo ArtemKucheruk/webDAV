@@ -19,9 +19,9 @@ interface AuthFormProps {
 }
 
 const FIELD =
-  'w-full rounded-md border border-line bg-transparent px-4 py-3 text-[17px] text-ink transition-colors placeholder:text-ink-3 focus:border-ink-2'
+    'w-full rounded-md border border-ink-3 bg-transparent px-4 py-3 text-[17px] text-ink transition-colors placeholder:text-ink-3 focus:border-ink-2'
 
-const LABEL = 'mb-2 block text-[15px] text-ink-2'
+const LABEL = 'mb-2 block text-[15px] text-ink-2 border-width: 10px'
 
 export function AuthForm({
   title,
@@ -59,7 +59,7 @@ export function AuthForm({
   }
 
   return (
-    <form onSubmit={submit} className="w-full max-w-[22rem]">
+    <form onSubmit={submit} className="w-full max-w-[25rem]">
       <h1 className="mb-8 text-center text-[22px] text-ink">{title}</h1>
 
       <div className="flex flex-col gap-4">
