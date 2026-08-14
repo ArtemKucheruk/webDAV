@@ -22,6 +22,11 @@ logout:
 	curl -s -b $(COOKIE_JAR) -X POST $(BASE_URL)/user/logout \
 		-w "\nHTTP %{http_code}\n"
 
+me:
+	curl -s -b $(COOKIE_JAR) $(BASE_URL)/user/me \
+		-w "\nHTTP %{http_code}\n"
+
+
 deactivate:
 	curl -s -b $(COOKIE_JAR) -X POST $(BASE_URL)/user/settings/deactivate \
 		-w "\nHTTP %{http_code}\n"

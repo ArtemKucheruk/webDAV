@@ -26,7 +26,7 @@ var quoteEscaper = strings.NewReplacer(`\`, `\\`, `"`, `\"`)
 func DownloadUserFile(c *echo.Context, logger *zerolog.Logger, redis *redis.Client, s *storage.Storage) error {
 	var downloadFileData downloadFileRequest
 	ctx := c.Request().Context()
-	userID, err := cache.GetSession(c, ctx, redis, logger)
+	userID, err := cache.GetUserIDFromSession(c, ctx, redis, logger)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
 	}
