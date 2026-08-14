@@ -16,29 +16,27 @@ function stageFor(pathname: string): StageName {
 
 function App() {
   useAnimatedFavicon()
-  const { pathname } = useLocation()
+  const location = useLocation()
   const navigate = useNavigate()
   const [docked, setDocked] = useState(false)
-  const [leaving, setLeaving] = useState(false)
+
+  /* the return flight is pinned to the history entry it started from */
+  const [returningFrom, setReturningFrom] = useState<string | null>(null)
+
+  /* every navigation mints a new key, even back to the same path, so the hold lets go on its own */
+  const leaving = returningFrom === location.key
 
   /* going out, the url leads and the scene follows. coming home the scene
      leads, so the form is still mounted to fade out with it */
-  const stage = leaving ? 'hero' : stageFor(pathname)
+  const stage = leaving ? 'hero' : stageFor(location.pathname)
 
   useEffect(() => {
     if (!leaving) return
-    const id = setTimeout(() => {
-      navigate('/')
-      setLeaving(false)
-    }, AUTH_DUR)
+    const id = setTimeout(() => navigate('/'), AUTH_DUR)
     return () => clearTimeout(id)
   }, [leaving, navigate])
 
-  /* any other navigation wins, otherwise a sign in clicked mid return would be
-     undone when the pending navigate fires */
-  useEffect(() => setLeaving(false), [pathname])
-
-  const leave = useCallback(() => setLeaving(true), [])
+  const leave = useCallback(() => setReturningFrom(location.key), [location.key])
 
   /* a direct load of an auth url never flies home, so it never docks, and the
      return flight must not take the chrome with it before it does */
