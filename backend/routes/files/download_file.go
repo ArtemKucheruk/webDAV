@@ -23,6 +23,16 @@ type downloadFileRequest struct {
 
 var quoteEscaper = strings.NewReplacer(`\`, `\\`, `"`, `\"`)
 
+// DownloadUserFile godoc
+// @Summary      Download a file
+// @Tags         files
+// @Produce      application/octet-stream
+// @Param        file_id  query  int  true  "file id"
+// @Success      200  {file}  file
+// @Failure      400  {object}  map[string]string
+// @Failure      401  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /file/download [get]
 func DownloadUserFile(c *echo.Context, logger *zerolog.Logger, redis *redis.Client, s *storage.Storage) error {
 	var downloadFileData downloadFileRequest
 	ctx := c.Request().Context()

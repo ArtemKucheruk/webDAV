@@ -15,6 +15,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// RegisterUser godoc
+// @Summary      Register a new user
+// @Description  Creates a user account and starts a session
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body      userAuthInfo  true  "email + password (min 8 chars)"
+// @Success      201   {object}  map[string]any
+// @Failure      400   {object}  map[string]string  "invalid body / invalid email / password too short"
+// @Failure      409   {object}  map[string]string  "email already registered"
+// @Failure      500   {object}  map[string]string
+// @Router       /user/create [post]
 func RegisterUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) error {
 	var userData userAuthInfo
 	if err := c.Bind(&userData); err != nil {
@@ -55,6 +67,18 @@ func RegisterUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) 
 	return c.JSON(http.StatusCreated, map[string]any{"id": id})
 }
 
+// LoginUser godoc
+// @Summary      Log in
+// @Description  Verifies credentials, activates the account if inactive, and starts a new session
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body      userAuthInfo  true  "email + password"
+// @Success      200   {object}  map[string]any
+// @Failure      400   {object}  map[string]string
+// @Failure      401   {object}  map[string]string  "invalid credentials"
+// @Failure      500   {object}  map[string]string
+// @Router       /user/login [post]
 func LoginUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) error {
 	var userData userAuthInfo
 	if err := c.Bind(&userData); err != nil {
@@ -106,6 +130,13 @@ func LoginUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) err
 	return c.JSON(http.StatusOK, map[string]any{"id": user.ID})
 }
 
+// LogoutUser godoc
+// @Summary      Log out
+// @Description  Deletes the current session
+// @Tags         auth
+// @Success      200  "session deleted"
+// @Failure      500  {object}  map[string]string
+// @Router       /user/logout [post]
 func LogoutUser(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) error {
 	if err := cache.DeleteSession(c, redis, logger); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete user session")

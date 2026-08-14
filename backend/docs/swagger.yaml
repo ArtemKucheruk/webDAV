@@ -1,0 +1,305 @@
+basePath: /api
+definitions:
+  auth.userAuthInfo:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  files.deleteFileRequest:
+    properties:
+      file_id:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: This is an API for webDAV project
+  title: webDAV backend API
+  version: "1.0"
+paths:
+  /file/delete:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: file_id
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/files.deleteFileRequest'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a file
+      tags:
+      - files
+  /file/download:
+    get:
+      parameters:
+      - description: file id
+        in: query
+        name: file_id
+        required: true
+        type: integer
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Download a file
+      tags:
+      - files
+  /file/get_all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: invalid session
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List the current user's files
+      tags:
+      - files
+  /file/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: file to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload a file
+      tags:
+      - files
+  /health/ping:
+    get:
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: Health check
+      tags:
+      - health
+  /user/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a user account and starts a session
+      parameters:
+      - description: email + password (min 8 chars)
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.userAuthInfo'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid body / invalid email / password too short
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: email already registered
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - auth
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Verifies credentials, activates the account if inactive, and starts
+        a new session
+      parameters:
+      - description: email + password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.userAuthInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: invalid credentials
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Log in
+      tags:
+      - auth
+  /user/logout:
+    post:
+      description: Deletes the current session
+      responses:
+        "200":
+          description: session deleted
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Log out
+      tags:
+      - auth
+  /user/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get current session info
+      tags:
+      - auth
+  /user/settings/deactivate:
+    post:
+      responses:
+        "200":
+          description: account deactivated
+        "401":
+          description: invalid session
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Deactivate the current account
+      tags:
+      - settings
+swagger: "2.0"
