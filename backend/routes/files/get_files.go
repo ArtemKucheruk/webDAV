@@ -14,7 +14,7 @@ import (
 
 func GetAllUserFiles(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) error {
 	ctx := c.Request().Context()
-	userID, err := cache.GetSession(c, ctx, redis, logger)
+	userID, err := cache.GetUserIDFromSession(c, ctx, redis, logger)
 	if err != nil {
 		if errors.Is(err, cache.ErrSessionNotFound) {
 			return echo.NewHTTPError(http.StatusUnauthorized, "invalid session")

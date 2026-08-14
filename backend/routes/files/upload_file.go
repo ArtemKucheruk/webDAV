@@ -23,7 +23,7 @@ type fileUploadStruct struct {
 func UploadUserFile(c *echo.Context, logger *zerolog.Logger, redis *redis.Client, s *storage.Storage) error {
 	var fileUploadData fileUploadStruct
 	ctx := c.Request().Context()
-	userID, err := cache.GetSession(c, ctx, redis, logger)
+	userID, err := cache.GetUserIDFromSession(c, ctx, redis, logger)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
 	}

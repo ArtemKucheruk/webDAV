@@ -69,7 +69,7 @@ func DeleteSessionByID(ctx context.Context, redis *redis.Client, sessionID strin
 	return redis.Del(ctx, "session:"+sessionID).Err()
 }
 
-func GetSession(c *echo.Context, ctx context.Context, rdb *redis.Client, logger *zerolog.Logger) (userID int32, err error) {
+func GetUserIDFromSession(c *echo.Context, ctx context.Context, rdb *redis.Client, logger *zerolog.Logger) (userID int32, err error) {
 	sessionID, err := c.Cookie("session_id")
 	if err != nil {
 		return 0, ErrSessionNotFound
@@ -88,4 +88,12 @@ func GetSession(c *echo.Context, ctx context.Context, rdb *redis.Client, logger 
 		return 0, err
 	}
 	return int32(parsedUserID), nil
+}
+
+func GetUserSession(c *echo.Context, ctx context.Context, rdb *redis.Client, logger *zerolog.Logger) (sessionID string, err error) {
+	sessionIDRaw, err := c.Cookie("session_id")
+	if err != nil {
+		return "", ErrSessionNotFound
+	}
+	return sessionIDRaw.Value, nil
 }
