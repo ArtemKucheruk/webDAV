@@ -2,6 +2,15 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* the wordmark face, only ever set on the mark itself */
+@font-face {
+  font-family: "bitwise";
+  src: url("/fonts/bitwise.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
 :root {
   color-scheme: light;
 
@@ -43,6 +52,7 @@
 
   /* body copy */
   --font-sans: "bc-civitas", ui-sans-serif, system-ui, sans-serif;
+  --font-mark: "bitwise", ui-monospace, monospace;
 
   --radius-pill:    999px;
   --spacing-pad:    clamp(20px, 6vw, 56px);
