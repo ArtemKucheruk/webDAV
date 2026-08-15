@@ -416,6 +416,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/settings/change_password": {
+            "patch": {
+                "description": "Requires an active session and confirmation of the current password",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "settings"
+                ],
+                "summary": "Change password",
+                "parameters": [
+                    {
+                        "description": "old_password + new_password (min 8 chars)",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/settings.changeUserPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "password changed"
+                    },
+                    "400": {
+                        "description": "invalid body / password too short",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "invalid session / wrong old password",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user/settings/deactivate": {
             "post": {
                 "tags": [
@@ -465,6 +520,17 @@ const docTemplate = `{
             "properties": {
                 "file_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "settings.changeUserPasswordRequest": {
+            "type": "object",
+            "properties": {
+                "old_password": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         }
