@@ -27,6 +27,13 @@ me:
 		-w "\nHTTP %{http_code}\n"
 
 
+change-password:
+	curl -s -b $(COOKIE_JAR) -X PATCH $(BASE_URL)/user/settings/change_password \
+		-H "Content-Type: application/json" \
+		-d '{"old_password":"$(OLD_PASSWORD)","password":"$(NEW_PASSWORD)"}' \
+		-w "\nHTTP %{http_code}\n"
+
+
 deactivate:
 	curl -s -b $(COOKIE_JAR) -X POST $(BASE_URL)/user/settings/deactivate \
 		-w "\nHTTP %{http_code}\n"

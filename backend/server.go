@@ -7,10 +7,16 @@ import (
 
 	"github.com/ArtemKucheruk/webDAV.git/cache"
 	"github.com/ArtemKucheruk/webDAV.git/db"
+	_ "github.com/ArtemKucheruk/webDAV.git/docs"
 	"github.com/ArtemKucheruk/webDAV.git/routes"
 	"github.com/ArtemKucheruk/webDAV.git/storage"
 	"github.com/ArtemKucheruk/webDAV.git/utils"
 )
+
+// @title webDAV backend API
+// @version 1.0
+// @description This is an API for webDAV project
+// @BasePath /api
 
 func main() {
 	env := utils.NewEnv(&utils.AppLogger, ".env")

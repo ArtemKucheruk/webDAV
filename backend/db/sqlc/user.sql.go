@@ -106,3 +106,14 @@ func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
 	)
 	return i, err
 }
+
+const getUserPasswordHash = `-- name: GetUserPasswordHash :one
+select password_hash from users where id = $1
+`
+
+func (q *Queries) GetUserPasswordHash(ctx context.Context, id int32) (string, error) {
+	row := q.db.QueryRow(ctx, getUserPasswordHash, id)
+	var password_hash string
+	err := row.Scan(&password_hash)
+	return password_hash, err
+}

@@ -8,12 +8,17 @@ import (
 	"github.com/labstack/echo/v5"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, storage *storage.Storage) {
+	// /health/[endpoint]
 	Group(api, "/health", func(r *echo.Group) {
 		r.GET("/ping", Ping)
 	})
+
+
+	api.GET("/swagger/*", echo.WrapHandler(httpSwagger.WrapHandler))
 
 	// /user/[endpoint]
 	Group(api, "/user", func(r *echo.Group) {
@@ -38,6 +43,11 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 			r.POST("/deactivate", func(c *echo.Context) error {
 				return settings.DeactivateUser(c, logger, redis)
 			})
+
+			r.PATCH("/change_password", func(c *echo.Context) error {
+				return settings.ChangeUserPassword(c, logger, redis)
+			})
+
 		})
 	})
 
