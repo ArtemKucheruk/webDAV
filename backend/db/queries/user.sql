@@ -19,6 +19,7 @@ update users set email = $1 where id = $2;
 update users set password_hash = $1 where id = $2;
 
 
+
 -- name: GetUserPasswordHash :one
 select password_hash from users where id = $1;
 

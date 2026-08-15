@@ -17,6 +17,7 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 		r.GET("/ping", Ping)
 	})
 
+
 	api.GET("/swagger/*", echo.WrapHandler(httpSwagger.WrapHandler))
 
 	// /user/[endpoint]
@@ -46,6 +47,7 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 			r.PATCH("/change_password", func(c *echo.Context) error {
 				return settings.ChangeUserPassword(c, logger, redis)
 			})
+
 		})
 	})
 

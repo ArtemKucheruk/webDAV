@@ -1,14 +1,20 @@
 import { useEffect, useRef } from 'react'
 import { createScene } from '@/scene'
+import type { SceneHandle, StageName } from '@/scene'
 
 interface VoidProps {
-  /** fired once when the logo finishes its flight */
+  /** where the logo should be, the url owns this */
+  stage: StageName
+  /** fired once when the logo finishes its flight home */
   onDock?: () => void
 }
 
-export function Void({ onDock }: VoidProps) {
+export function Void({ stage, onDock }: VoidProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const sceneRef = useRef<SceneHandle | null>(null)
   const onDockRef = useRef(onDock)
+  const stageRef = useRef(stage)
+
   useEffect(() => {
     onDockRef.current = onDock
   })
@@ -17,8 +23,17 @@ export function Void({ onDock }: VoidProps) {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const scene = createScene(canvas, { onDock: () => onDockRef.current?.() })
-    if (!scene) return // no WebGL — the CSS background stands in
+    /* built once for the life of the app, routing must never take the webgl
+       context with it, so this effect has no dependencies on purpose */
+    const scene = createScene(canvas, {
+      stage: stageRef.current,
+      onDock: () => onDockRef.current?.(),
+      /* a css var rather than react state, so the html layer tracks the flight
+         frame for frame without a rerender */
+      onExit: (exit) => document.documentElement.style.setProperty('--exit', String(exit)),
+    })
+    if (!scene) return // no webgl, the css background stands in
+    sceneRef.current = scene
 
     const onResize = () => scene.resize()
     const onLaunch = () => scene.launch()
@@ -60,9 +75,20 @@ export function Void({ onDock }: VoidProps) {
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('pointermove', onPointerMove)
       document.removeEventListener('visibilitychange', onVisibility)
+      sceneRef.current = null
       scene.dispose()
     }
   }, [])
 
-  return <canvas ref={canvasRef} aria-hidden="true" className="fixed inset-0 z-0 block h-full w-full" />
+  /* the first render already opened on the right stage, only later url
+     changes are a flight */
+  useEffect(() => {
+    if (stage === stageRef.current) return
+    stageRef.current = stage
+    sceneRef.current?.flyTo(stage)
+  }, [stage])
+
+  return (
+    <canvas ref={canvasRef} aria-hidden="true" className="fixed inset-0 z-0 block h-full w-full" />
+  )
 }

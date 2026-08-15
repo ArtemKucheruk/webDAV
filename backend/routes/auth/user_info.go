@@ -12,6 +12,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+
 // GetUserInfo godoc
 // @Summary      Get current user
 // @Description  Resolves the session cookie and returns the logged-in user's id and email
@@ -21,6 +22,7 @@ import (
 // @Failure      401  {object}  map[string]string  "invalid session"
 // @Failure      500  {object}  map[string]string
 // @Router       /user/me [get]
+
 func GetUserInfo(c *echo.Context, logger *zerolog.Logger, redis *redis.Client) error {
 	ctx := c.Request().Context()
 	userID, err := cache.GetUserIDFromSession(c, ctx, redis, logger)

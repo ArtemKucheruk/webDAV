@@ -4,6 +4,7 @@ uniform vec3  uEnvTop;
 uniform vec3  uEnvBot;
 uniform vec2  uHot;
 uniform vec4  uLogo;   // xy = centre px, z = width px, w = strength
+uniform float uRoom;   // 1 = lit room, 0 = pure black
 
 vec3 envAt(vec2 fc){
   vec2 uv = fc / uRes;
@@ -27,5 +28,6 @@ vec3 envAt(vec2 fc){
 /* screen-space quad: no camera transform, so the room never moves */
 export const SKY_VERT = `void main(){ gl_Position = vec4(position.xy, 0.0, 1.0); }`
 
+// dim here and not inside envAt, so the additive hotspot dies too and 0 is truly 0
 export const SKY_FRAG = `${ENV}
-void main(){ gl_FragColor = vec4(envAt(gl_FragCoord.xy), 1.0); }`
+void main(){ gl_FragColor = vec4(envAt(gl_FragCoord.xy) * uRoom, 1.0); }`

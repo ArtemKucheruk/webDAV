@@ -1,37 +1,53 @@
+import { Button } from '@/components/ui/Button'
+
 const DESTINATIONS = [
   { label: 'docs', href: '#' },
   { label: 'github', href: '#' },
 ]
 
-const LINK = 'text-[17px] text-ink-3 transition-colors hover:text-ink'
+interface NavbarProps {
+  /** which set of actions the corner holds, the fade itself rides the flight */
+  atAuth: boolean
+  /** flies home first and routes after, so the form can fade out on the way */
+  onLeave: () => void
+}
 
-export function Navbar() {
+/** fixed, not sticky: in flow it would add its own height to every page */
+export function Navbar({ atAuth, onLeave }: NavbarProps) {
   return (
-    <nav aria-label="Main" className="sticky top-0 z-20">
+    <nav aria-label="Main" className="fixed inset-x-0 top-0 z-20">
       <div className="mx-auto flex h-22 max-w-page items-center justify-between gap-8 px-pad">
         <ul className="flex items-center gap-8 sm:gap-12">
           {DESTINATIONS.map(({ label, href }) => (
             <li key={label}>
-              <a href={href} className={LINK}>
+              <Button variant="quiet" href={href}>
                 {label}
-              </a>
+              </Button>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center gap-6">
-          <a href="#" className={LINK}>
+          <Button variant="quiet" to="/login">
             sign in
-          </a>
+          </Button>
 
-          <a
-            href="#"
-            className="inline-flex items-center gap-2 rounded-md bg-fill px-7 py-2 text-[17px]
-              whitespace-nowrap text-on-fill transition-transform motion-safe:hover:-translate-y-px"
-          >
+          <Button to="/register">
             register
             <span aria-hidden="true"></span>
-          </a>
+          </Button>
+
+          {/* always in the flow so nothing shifts, it only fades with the flight */}
+          <Button
+            variant="quiet"
+            onClick={onLeave}
+            aria-hidden={!atAuth}
+            // pointer-events alone still leaves it in the tab order while hidden
+            tabIndex={atAuth ? undefined : -1}
+            className={`exit-in ${atAuth ? '' : 'pointer-events-none'}`}
+          >
+            return back
+          </Button>
         </div>
       </div>
     </nav>

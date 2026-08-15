@@ -1,17 +1,39 @@
-import { DOCK_W, DOCK_Y, START_CAMERA } from '../config'
+import { ROOM_LATE } from '../config'
+import type { Stage } from '../config'
 import type { Pose } from '@/types/scene'
 
-/** symmetric cubic — starts and stops, never flung */
+/** smootherstep, flat acceleration at both ends so nothing jolts on departure */
 export function ease(u: number): number {
-  return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2
+  return u * u * u * (u * (u * 6 - 15) + 10)
 }
 
-/** pose at progress u, where 0 is the opening and 1 is docked */
-export function poseAt(u: number, vw: number, vh: number): Pose {
+/** remaps progress into a window, for channels that start after the others */
+function late(u: number, from: number): number {
+  return ease(Math.min(1, Math.max(0, (u - from) / (1 - from))))
+}
+
+/** blends any two stages, so an interrupted flight can become the next from */
+export function stageAt(from: Stage, to: Stage, u: number): Stage {
   const e = ease(u)
+  const mix = (a: number, b: number) => a + (b - a) * e
+
+  /* the lights hold while the climb leads, so the room is still lit for the
+     part of the trip you can actually see */
+  const r = late(u, ROOM_LATE)
+
   return {
-    w: (START_CAMERA + (DOCK_W - START_CAMERA) * e) * vw,
+    w: mix(from.w, to.w),
+    y: mix(from.y, to.y),
+    room: from.room + (to.room - from.room) * r,
+    exit: mix(from.exit, to.exit),
+  }
+}
+
+/** a stage only becomes a screen space pose once the viewport is known */
+export function poseOf(stage: Stage, vw: number, vh: number): Pose {
+  return {
+    w: stage.w * vw,
     cx: vw / 2,
-    cy: (0.5 + (DOCK_Y - 0.5) * e) * vh,
+    cy: stage.y * vh,
   }
 }
