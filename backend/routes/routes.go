@@ -17,7 +17,6 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 		r.GET("/ping", Ping)
 	})
 
-
 	api.GET("/swagger/*", echo.WrapHandler(httpSwagger.WrapHandler))
 
 	// /user/[endpoint]

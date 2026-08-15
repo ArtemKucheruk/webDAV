@@ -12,7 +12,6 @@ import (
 	"github.com/rs/zerolog"
 )
 
-
 // GetUserInfo godoc
 // @Summary      Get current user
 // @Description  Resolves the session cookie and returns the logged-in user's id and email
