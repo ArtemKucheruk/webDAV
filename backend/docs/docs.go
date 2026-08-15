@@ -389,19 +389,29 @@ const docTemplate = `{
         },
         "/user/me": {
             "get": {
+                "description": "Resolves the session cookie and returns the logged-in user's id and email",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "auth"
                 ],
-                "summary": "Get current session info",
+                "summary": "Get current user",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "user_id, email",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "invalid session",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {

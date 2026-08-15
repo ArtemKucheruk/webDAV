@@ -272,13 +272,21 @@ paths:
       - auth
   /user/me:
     get:
+      description: Resolves the session cookie and returns the logged-in user's id
+        and email
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: user_id, email
           schema:
             additionalProperties: true
+            type: object
+        "401":
+          description: invalid session
+          schema:
+            additionalProperties:
+              type: string
             type: object
         "500":
           description: Internal Server Error
@@ -286,7 +294,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Get current session info
+      summary: Get current user
       tags:
       - auth
   /user/settings/change_password:
