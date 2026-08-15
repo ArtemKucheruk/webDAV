@@ -12,6 +12,13 @@ definitions:
       file_id:
         type: integer
     type: object
+  settings.changeUserPasswordRequest:
+    properties:
+      old_password:
+        type: string
+      password:
+        type: string
+    type: object
 info:
   contact: {}
   description: This is an API for webDAV project
@@ -282,6 +289,42 @@ paths:
       summary: Get current session info
       tags:
       - auth
+  /user/settings/change_password:
+    patch:
+      consumes:
+      - application/json
+      description: Requires an active session and confirmation of the current password
+      parameters:
+      - description: old_password + new_password (min 8 chars)
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/settings.changeUserPasswordRequest'
+      responses:
+        "200":
+          description: password changed
+        "400":
+          description: invalid body / password too short
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: invalid session / wrong old password
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Change password
+      tags:
+      - settings
   /user/settings/deactivate:
     post:
       responses:

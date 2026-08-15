@@ -42,6 +42,10 @@ func SetupRoutes(api *echo.Group, logger *zerolog.Logger, redis *redis.Client, s
 			r.POST("/deactivate", func(c *echo.Context) error {
 				return settings.DeactivateUser(c, logger, redis)
 			})
+
+			r.PATCH("/change_password", func(c *echo.Context) error {
+				return settings.ChangeUserPassword(c, logger, redis)
+			})
 		})
 	})
 
