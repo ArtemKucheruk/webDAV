@@ -14,7 +14,7 @@ export function Register() {
         confirm
         onSubmit={async (credentials) => {
           await register(credentials)
-          navigate('/')
+          navigate('/login', { replace: true })
         }}
         footer={
           <>

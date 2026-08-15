@@ -13,7 +13,7 @@ export function Login() {
         autoComplete="current-password"
         onSubmit={async (credentials) => {
           await login(credentials)
-          navigate('/')
+          navigate('/account', { state: { id: "id" } })
         }}
         footer={
           <>
