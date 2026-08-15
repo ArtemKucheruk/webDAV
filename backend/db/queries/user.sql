@@ -6,6 +6,8 @@ insert into users (email, password_hash)
 -- name: GetUserByEmail :one
 select * from users where email = $1;
 
+-- name: GetUserEmailById :one
+select email from users where id = $1;
 
 -- name: GetUserById :one 
 select * from users where id = $1;

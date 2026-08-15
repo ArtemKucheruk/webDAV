@@ -107,6 +107,17 @@ func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
 	return i, err
 }
 
+const getUserEmailById = `-- name: GetUserEmailById :one
+select email from users where id = $1
+`
+
+func (q *Queries) GetUserEmailById(ctx context.Context, id int32) (string, error) {
+	row := q.db.QueryRow(ctx, getUserEmailById, id)
+	var email string
+	err := row.Scan(&email)
+	return email, err
+}
+
 const getUserPasswordHash = `-- name: GetUserPasswordHash :one
 select password_hash from users where id = $1
 `
