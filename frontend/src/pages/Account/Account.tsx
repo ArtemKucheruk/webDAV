@@ -1,5 +1,17 @@
-/** bare on purpose, the id and email land here once /user/me returns them */
+import { Outlet } from 'react-router-dom'
+import { Sidebar } from '@/components/ui/Sidebar'
+
+/** the rail is fixed, so the column has to hold its own width open */
 export function Account() {
-  // covers the canvas rather than unmounting it, the webgl context has to survive routing
-  return <div className="relative z-10 min-h-svh bg-ground" />
+  return (
+    <div className="relative z-10 min-h-svh bg-ground text-ink">
+      <Sidebar />
+
+      <main className="pt-16 sm:pt-0 sm:pl-60">
+        <div className="mx-auto max-w-[44rem] px-pad pt-14 pb-24 sm:pt-[18svh]">
+          <Outlet />
+        </div>
+      </main>
+    </div>
+  )
 }

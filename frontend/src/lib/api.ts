@@ -1,5 +1,10 @@
 const BASE = '/api'
 
+  export interface User {
+    user_id: number
+    email: string
+  }
+
 export interface Credentials {
   email: string
   password: string
@@ -40,6 +45,19 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 
   return payload as T
 }
+
+async function get<T>(path: string): Promise<T> {
+    const res = await fetch(BASE + path, {
+      credentials: 'include', // the session lives in the cookie
+    })
+
+    const payload = parse(await res.text())
+    if (!res.ok) throw new Error(messageOf(payload) ?? `request failed (${res.status})`)
+
+    return payload as T
+  }
+
+  export const me = () => get<User>('/user/me')
 
 export const login = (credentials: Credentials) => post<AuthResult>('/user/login', credentials)
 
