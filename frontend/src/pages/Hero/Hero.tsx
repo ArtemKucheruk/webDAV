@@ -1,7 +1,11 @@
-import { Reach } from '@/components/Reach'
+import { useLocation } from 'react-router-dom'
+import { Footer } from '@/components/Footer/Footer'
+import { Reach } from '@/components/Reach/Reach'
 import { SAY_Y } from '@/scene'
 
 export function Hero() {
+  const atHome = useLocation().pathname === '/'
+
   return (
     <>
       <p
@@ -14,6 +18,14 @@ export function Hero() {
       <section className="exit-fade pointer-events-none absolute inset-x-0 top-[52svh] z-10 px-pad">
         <Reach />
       </section>
+
+      {atHome && (
+        <>
+          <section className="h-svh" />
+
+          <Footer />
+        </>
+      )}
     </>
   )
 }
