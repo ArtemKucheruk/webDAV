@@ -1,4 +1,4 @@
-import { useAuth } from '@/auth/RequireAuth'
+import { useAuth } from '@/auth'
 
 const ROW = 'flex items-baseline justify-between gap-6 border-b border-hair py-3'
 
