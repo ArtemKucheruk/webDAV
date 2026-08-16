@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
+import { useSession } from '@/auth'
 
 const DESTINATIONS = [
   { label: 'docs', href: '#' },
@@ -14,6 +16,8 @@ interface NavbarProps {
 
 /** fixed, not sticky: in flow it would add its own height to every page */
 export function Navbar({ atAuth, onLeave }: NavbarProps) {
+  const { user } = useSession()
+
   return (
     <nav aria-label="Main" className="fixed inset-x-0 top-0 z-20">
       <div className="mx-auto flex h-22 max-w-page items-center justify-between gap-8 px-pad">
@@ -48,6 +52,18 @@ export function Navbar({ atAuth, onLeave }: NavbarProps) {
           >
             return back
           </Button>
+
+          {/* the cookie is still good, so the account is one click away, no form */}
+          {user && (
+            <Link
+              to="/account"
+              aria-label="your account"
+              title={user.email}
+              className="shrink-0 transition-opacity hover:opacity-70"
+            >
+              <img src="/svg/user.png" alt="" className="h-8 w-8" />
+            </Link>
+          )}
         </div>
       </div>
     </nav>
