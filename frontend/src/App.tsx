@@ -4,7 +4,8 @@ import { Navbar } from '@/components/Navbar'
 import { Void } from '@/components/Void'
 import { Hero } from '@/pages/Hero'
 import { Login } from '@/pages/Login'
-import { Account } from '@/pages/Account'
+import { Account, Dashboard, Profile } from '@/pages/Account'
+import { RequireAuth } from '@/auth/RequireAuth/RequireAuth'
 import { Register } from '@/pages/Register'
 import { AUTH_DUR } from '@/scene'
 import type { StageName } from '@/scene'
@@ -44,11 +45,8 @@ function App() {
 
   const leave = useCallback(() => setReturningFrom(location.key), [location.key])
 
-  /* the account screen is bare until /user/me is ready to fill it */
-  const atAccount = location.pathname === '/account'
+  const atAccount = location.pathname.startsWith('/account')
 
-  /* a direct load of an auth url never flies home, so it never docks, and the
-     return flight must not take the chrome with it before it does */
   const chrome = (docked || leaving || stage === 'auth') && !atAccount
 
   return (
@@ -62,7 +60,12 @@ function App() {
         <Route path="/" element={null} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/account" element={<Account />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/account" element={<Account />}>
+            <Route index element={<Profile />} />
+            <Route path="dashboard" element={<Dashboard />} />
+          </Route>
+        </Route>
       </Routes>
     </>
   )
