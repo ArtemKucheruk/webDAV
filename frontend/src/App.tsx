@@ -9,7 +9,7 @@ import { RequireAuth } from '@/auth/RequireAuth/RequireAuth'
 import { Register } from '@/pages/Register'
 import { AUTH_DUR } from '@/scene'
 import type { StageName } from '@/scene'
-import { useAnimatedFavicon } from './hooks/useAnimatedFav'
+// import { useAnimatedFavicon } from './hooks/useAnimatedFav'
 
 /** the url is the source of truth for where the logo sits */
 function stageFor(pathname: string): StageName {
@@ -17,7 +17,8 @@ function stageFor(pathname: string): StageName {
 }
 
 function App() {
-  useAnimatedFavicon()
+  // favicon animation parked, the tab keeps the static icon from index.html
+  // useAnimatedFavicon()
   const location = useLocation()
   const navigate = useNavigate()
   const [docked, setDocked] = useState(false)
