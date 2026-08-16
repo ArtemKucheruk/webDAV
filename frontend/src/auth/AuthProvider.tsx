@@ -21,9 +21,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  /* the first ask is a subscription to the server, so the answer lands in a
+     callback, never straight into the effect body */
   useEffect(() => {
-    void refresh()
-  }, [refresh])
+    let alive = true
+    me().then(
+      (u) => {
+        if (!alive) return
+        setUser(u)
+        setStatus('in')
+      },
+      () => {
+        if (alive) setStatus('out')
+      },
+    )
+    return () => {
+      alive = false
+    }
+  }, [])
 
   const value = useMemo(() => ({ user, status, refresh }), [user, status, refresh])
 
