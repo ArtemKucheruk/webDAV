@@ -89,6 +89,10 @@ export function Void({ stage, onDock }: VoidProps) {
   }, [stage])
 
   return (
-    <canvas ref={canvasRef} aria-hidden="true" className="fixed inset-0 z-0 block h-full w-full" />
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="absolute inset-x-0 top-0 z-0 block h-svh w-full"
+    />
   )
 }

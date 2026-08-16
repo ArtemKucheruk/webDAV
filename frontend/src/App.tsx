@@ -37,6 +37,11 @@ function App() {
     return () => clearTimeout(id)
   }, [leaving, navigate])
 
+  /* the router keeps the scroll offset across routes, every page starts at its own top */
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
+
   const leave = useCallback(() => setReturningFrom(location.key), [location.key])
 
   /* the account screen is bare until /user/me is ready to fill it */
