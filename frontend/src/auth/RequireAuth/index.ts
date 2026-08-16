@@ -1,2 +1,3 @@
-export { RequireAuth, useAuth } from './RequireAuth'
-export type { AuthContext } from './RequireAuth'
+export { RequireAuth } from './RequireAuth'
+export { useAuth } from './useAuth'
+export type { AuthContext } from './useAuth'

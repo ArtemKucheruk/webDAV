@@ -1,14 +1,8 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { me } from '@/lib/api'
 import type { User } from '@/lib/api'
-
-export interface AuthContext {
-  user: User
-}
-
-/** outlet context only reaches one level down, the account page nests deeper */
-const Ctx = createContext<AuthContext | null>(null)
+import { Ctx } from './useAuth'
 
 type Status = 'checking' | 'in' | 'out'
 
@@ -47,11 +41,4 @@ export function RequireAuth() {
       <Outlet />
     </Ctx.Provider>
   )
-}
-
-/** every guarded page reads the user from here, the fetch happens once */
-export function useAuth() {
-  const ctx = useContext(Ctx)
-  if (!ctx) throw new Error('useAuth is only valid under RequireAuth')
-  return ctx
 }
