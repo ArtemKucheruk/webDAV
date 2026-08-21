@@ -9,7 +9,7 @@ return (
     <section>
     <h1 className="mb-8 text-[22px]">account</h1>
 
-    <dl className="max-w-[28rem]">
+    <dl className="max-w-md">
         <div className={ROW}>
         <dt className="text-[15px] text-ink-3">email</dt>
         <dd>{user.email}</dd>
