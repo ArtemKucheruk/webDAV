@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom'
 import { Footer } from '@/components/Footer/Footer'
 import { Reach } from '@/components/Reach/Reach'
+import { Reach_2 } from '@/components/Reach_2/Reach_2'
 import { SAY_Y } from '@/scene'
 
 export function Hero() {
@@ -22,6 +23,8 @@ export function Hero() {
       {atHome && (
         <>
           <section className="h-svh" />
+
+          <Reach_2 />
 
           <Footer />
         </>
