@@ -1,10 +1,12 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AuthForm } from '@/components/AuthForm'
+import { useSession } from '@/auth'
 import { login } from '@/lib/api'
 
 export function Login() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { refresh } = useSession()
   const from = (location.state as { from?: string } | null)?.from ?? '/account'
 
   return (
@@ -15,6 +17,8 @@ export function Login() {
         autoComplete="current-password"
         onSubmit={async (credentials) => {
           await login(credentials)
+          // the guard reads the provider, not the cookie, so it has to hear about this
+          await refresh()
           navigate(from, { replace: true })
         }}
         footer={

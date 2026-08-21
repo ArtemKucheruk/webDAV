@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
-import { useAuth } from '@/auth/RequireAuth'
+import { useAuth } from '@/auth'
 
 const SECTIONS = [
   { label: 'profile', to: '/account', end: true },

@@ -1,16 +1,8 @@
-import { createContext, useContext } from 'react'
-import type { User } from '@/lib/api'
+import { useSession } from '../session'
 
-export interface AuthContext {
-  user: User
-}
-
-/** outlet context only reaches one level down, the account page nests deeper */
-export const Ctx = createContext<AuthContext | null>(null)
-
-/** every guarded page reads the user from here, the fetch happens once */
+/** a guarded page has a user for certain, this saves it the null check */
 export function useAuth() {
-  const ctx = useContext(Ctx)
-  if (!ctx) throw new Error('useAuth is only valid under RequireAuth')
-  return ctx
+  const { user } = useSession()
+  if (!user) throw new Error('useAuth is only valid under RequireAuth')
+  return { user }
 }
