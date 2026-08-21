@@ -54,7 +54,7 @@ function App() {
     <>
       {/* all three sit outside routes, a route change must not remount them */}
       <Void stage={stage} onDock={() => setDocked(true)} />
-      {chrome && <Navbar atAuth={stage === 'auth'} onLeave={leave} />}
+      {chrome && <Navbar atAuth={stage === 'auth' || leaving} onLeave={leave} />}
       {chrome && <Hero />}
 
       <Routes>
