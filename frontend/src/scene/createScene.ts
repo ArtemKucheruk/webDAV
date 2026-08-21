@@ -41,6 +41,8 @@ export interface SceneHandle {
   flyTo(name: StageName): void
   /** pointer in -1..1, already inverted */
   setPointer(x: number, y: number): void
+  /** how far the page is scrolled through the hero, 0 at the top and 1 past it */
+  setScroll(p: number): void
   /** redraw after something outside changed */
   wake(): void
   dispose(): void
@@ -113,6 +115,8 @@ export function createScene(
   let my = 0
   let tx = 0
   let ty = 0
+  let sTarget = 0
+  let sNow = 0
   /* 0 until the mesh arrives, nothing to cast a contact shadow before that */
   let shadow = 0
 
@@ -139,23 +143,24 @@ export function createScene(
   function applyStage() {
     const pose = poseOf(current, vw, vh)
     const c = solveCamera(pose, vw, vh, depth)
+    const exit = current.exit + (1 - current.exit) * sNow
 
     /* one straight line, forward into the wordmark and a little under it. the
        pose is what the lens starts from, exit is how far along it has travelled */
-    const travel = current.exit * c.z
+    const travel = exit * c.z
     camera.position.set(c.x, c.y - AUTH_DOWN * travel, c.z - AUTH_FWD * travel)
     camera.near = c.near
     camera.far = c.far
     camera.updateProjectionMatrix()
     uniforms.uCam.value.copy(camera.position)
     uniforms.uRoom.value = current.room
-    options.onExit?.(current.exit)
+    options.onExit?.(exit)
     uniforms.uLogo.value.set(
       pose.cx * dpr,
       (vh - pose.cy) * dpr,
       pose.w * dpr,
       // the shadow is pinned to the docked pose, so it goes as the lens leaves
-      shadow * current.room * (1 - current.exit),
+      shadow * current.room * (1 - exit),
     )
   }
 
@@ -204,12 +209,24 @@ export function createScene(
   function frame() {
     raf = null
 
+    let moved = false
+
     if (u < 1) {
       u = Math.min(1, (performance.now() - t0) / dur)
       current = stageAt(from, to, u)
+      moved = true
+      if (u >= 1 && toName === 'hero') fireDock()
+    }
+
+    if (sNow !== sTarget) {
+      const d = sTarget - sNow
+      sNow = Math.abs(d) < 0.0005 ? sTarget : sNow + d * 0.12
+      moved = true
+    }
+
+    if (moved) {
       applyStage()
       dirty = true
-      if (u >= 1 && toName === 'hero') fireDock()
     }
 
     mx += (tx - mx) * 0.07
@@ -234,6 +251,13 @@ export function createScene(
   function setPointer(x: number, y: number) {
     tx = x
     ty = y
+    wake()
+  }
+
+  function setScroll(p: number) {
+    const next = Math.min(1, Math.max(0, p))
+    if (next === sTarget) return
+    sTarget = next
     wake()
   }
 
@@ -271,5 +295,5 @@ export function createScene(
   // after resize, solveCamera divides by the viewport which is 0 until then
   if (reduced && opensOnHero) flyTo('hero')
 
-  return { resize, launch, flyTo, setPointer, wake, dispose }
+  return { resize, launch, flyTo, setPointer, setScroll, wake, dispose }
 }

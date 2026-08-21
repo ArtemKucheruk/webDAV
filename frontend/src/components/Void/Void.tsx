@@ -38,6 +38,8 @@ export function Void({ stage, onDock }: VoidProps) {
     const onResize = () => scene.resize()
     const onLaunch = () => scene.launch()
 
+    const onScroll = () => scene.setScroll(window.scrollY / window.innerHeight)
+
     const onVisibility = () => {
       if (!document.hidden) scene.wake()
     }
@@ -53,7 +55,10 @@ export function Void({ stage, onDock }: VoidProps) {
       )
     }
 
+    onScroll() // a reload can restore the page mid hero
+
     window.addEventListener('resize', onResize, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('wheel', onLaunch, { passive: true })
     window.addEventListener('touchmove', onLaunch, { passive: true })
     window.addEventListener('pointerdown', onLaunch, { passive: true })
@@ -69,6 +74,7 @@ export function Void({ stage, onDock }: VoidProps) {
 
     return () => {
       window.removeEventListener('resize', onResize)
+      window.removeEventListener('scroll', onScroll)
       window.removeEventListener('wheel', onLaunch)
       window.removeEventListener('touchmove', onLaunch)
       window.removeEventListener('pointerdown', onLaunch)
@@ -92,7 +98,7 @@ export function Void({ stage, onDock }: VoidProps) {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="absolute inset-x-0 top-0 z-0 block h-svh w-full"
+      className="fixed inset-0 z-0 block h-dvh w-full"
     />
   )
 }
