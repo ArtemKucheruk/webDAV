@@ -48,7 +48,7 @@ export function Navbar({ atAuth, onLeave }: NavbarProps) {
             aria-hidden={!atAuth}
             // pointer-events alone still leaves it in the tab order while hidden
             tabIndex={atAuth ? undefined : -1}
-            className={`exit-in ${atAuth ? '' : 'pointer-events-none'}`}
+            className={atAuth ? 'exit-in' : 'pointer-events-none opacity-0'}
           >
             return back
           </Button>

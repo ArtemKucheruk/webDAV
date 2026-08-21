@@ -10,7 +10,7 @@ const LINK = 'text-[15px] text-ink-3 transition-colors hover:text-ink'
 export function Footer() {
   return (
     <footer className="relative z-10">
-      <div className="flex min-h-[19rem] flex-col justify-between gap-12 px-pad py-10">
+      <div className="flex min-h-76 flex-col justify-between gap-12 px-pad py-10">
         <div className="flex items-center justify-end gap-6">
           <Button variant="quiet" to="/login">
             sign in
